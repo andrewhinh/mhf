@@ -1,25 +1,21 @@
-import os
 import subprocess
 from pathlib import Path, PurePosixPath
 
 import modal
 
 NAME = "mho"
-DEFAULT_IMG_URL = (
-    "https://formless-data.s3.us-west-1.amazonaws.com/train/00001d1472a8709f.png"
-)
+DEFAULT_IMG_URL = "https://ndownloader.figshare.com/files/46283905"
 PARENT_PATH = Path(__file__).parent
-DEFAULT_IMG_PATH = PARENT_PATH / "api" / "eg.png"
+ARTIFACTS_PATH = PARENT_PATH / "artifacts"
+DEFAULT_IMG_PATH = ARTIFACTS_PATH / "data" / "0.png"
 DEFAULT_SYSTEM_PROMPT = "You are a helpful assistant."
-DEFAULT_QUESTION = "What is the content of this image?"
+DEFAULT_USER_PROMPT = """
+Detect all substructures in the 2D ultrasound and return their locations in the form of coordinates.
+The format of output should be like {"substructure_1": [[x1, y1], [x2, y2], ...], ...}.
+"""
 
 # Modal
-IN_PROD = os.getenv("MODAL_ENVIRONMENT", "dev") == "main"
-SECRETS = [
-    modal.Secret.from_dotenv(
-        path=PARENT_PATH, filename=".env" if IN_PROD else ".env.dev"
-    )
-]
+SECRETS = [modal.Secret.from_dotenv(path=PARENT_PATH, filename=".env")]
 
 CUDA_VERSION = "12.4.0"
 FLAVOR = "devel"
@@ -45,7 +41,6 @@ GPU_IMAGE = (
     )
     .apt_install("git")  # add system dependencies
     .pip_install(  # add Python dependencies
-        "vllm==0.6.5",
         "hf_transfer==0.1.8",
         "ninja==1.11.1",  # required to build flash-attn
         "packaging==23.1",  # required to build flash-attn
@@ -58,7 +53,7 @@ GPU_IMAGE = (
     .env(
         {
             "TOKENIZERS_PARALLELISM": "false",
-            "HUGGINGFACE_HUB_CACHE": f"/{PRETRAINED_VOLUME}",
+            "HUGGINGFACE_HUB_CACHE": f"/{PRETRAINED_VOLUME}/models",
             "HF_HUB_ENABLE_HF_TRANSFER": "1",
         }
     )

@@ -8,7 +8,9 @@ dependencies = [
     "gimpformats>=2024",
     "ipykernel>=6.29.5",
     "matplotlib>=3.10.0",
+    "modal>=0.73.24",
     "opencv-python>=4.11.0.86",
+    "python-dotenv>=1.0.1",
     "requests>=2.32.3",
     "tqdm>=4.67.1",
 ]

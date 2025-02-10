@@ -1,0 +1,167 @@
+[
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect all substructures in the 2D ultrasound and return their locations in the form of coordinates.\nThe format of output should be like {\"substructure_1\": [[x1, y1], [x2, y2], ...], ...}.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"calota\": [[426.0, 147.0], [583.0, 289.0], [220.0, 291.0], [422.0, 436.0]], \"talems\": [[340.0, 256.0], [312.0, 290.0], [345.0, 324.0]], \"cerebel\": [[279.0, 220.0], [238.0, 252.0], [311.0, 261.0], [246.0, 292.0], [299.0, 294.0], [307.0, 319.0], [241.0, 321.0], [276.0, 358.0]], \"cavum\": [[421.0, 270.0], [473.0, 274.0], [422.0, 305.0], [480.0, 307.0]], \"silvio\": [[423.0, 392.0], [444.0, 395.0], [406.0, 406.0]], \"astes anteriors\": [[492.0, 237.0], [490.0, 336.0]], \"linia mitja\": [[511.0, 287.0], [482.0, 288.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mho/artifacts/data/86.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect all substructures in the 2D ultrasound and return their locations in the form of coordinates.\nThe format of output should be like {\"substructure_1\": [[x1, y1], [x2, y2], ...], ...}.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"calota\": [[321.0, 241.0], [600.0, 314.0], [221.0, 437.0], [425.0, 539.0]], \"talems\": [[451.0, 321.0], [487.0, 349.0], [467.0, 395.0]], \"cerebel\": [[502.0, 263.0], [555.0, 296.0], [484.0, 318.0], [550.0, 331.0], [496.0, 347.0], [576.0, 359.0], [501.0, 375.0], [554.0, 402.0]], \"cavum\": [[319.0, 376.0], [373.0, 378.0], [385.0, 402.0], [335.0, 410.0]], \"silvio\": [[405.0, 494.0], [442.0, 494.0], [367.0, 528.0]], \"astes anteriors\": [[288.0, 366.0], [318.0, 457.0]], \"linia mitja\": [[324.0, 403.0], [280.0, 421.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mho/artifacts/data/13.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect all substructures in the 2D ultrasound and return their locations in the form of coordinates.\nThe format of output should be like {\"substructure_1\": [[x1, y1], [x2, y2], ...], ...}.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"C\\u00f3rtex\": [[273.0, 466.0], [303.0, 476.0]], \"calota\": [[342.0, 186.0], [569.0, 324.0], [192.0, 357.0], [368.0, 498.0]], \"talems\": [[428.0, 296.0], [462.0, 331.0], [356.0, 341.0], [432.0, 371.0]], \"cerebel\": [[507.0, 258.0], [543.0, 295.0], [468.0, 299.0], [533.0, 327.0], [470.0, 333.0], [544.0, 358.0], [475.0, 363.0], [520.0, 397.0]], \"cavum\": [[297.0, 325.0], [345.0, 327.0], [302.0, 358.0], [348.0, 358.0]], \"silvio\": [[357.0, 452.0], [321.0, 466.0], [390.0, 474.0]], \"astes anteriors\": [[266.0, 291.0], [273.0, 399.0]], \"linia mitja\": [[297.0, 344.0], [249.0, 347.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mho/artifacts/data/100.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect all substructures in the 2D ultrasound and return their locations in the form of coordinates.\nThe format of output should be like {\"substructure_1\": [[x1, y1], [x2, y2], ...], ...}.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"calota\": [[250.0, 167.0], [517.0, 237.0], [166.0, 336.0], [302.0, 449.0]], \"talems\": [[368.0, 245.0], [404.0, 275.0], [383.0, 320.0]], \"cerebel\": [[417.0, 195.0], [459.0, 218.0], [395.0, 242.0], [459.0, 257.0], [411.0, 272.0], [476.0, 285.0], [417.0, 298.0], [455.0, 327.0]], \"cavum\": [[277.0, 303.0], [238.0, 308.0], [246.0, 330.0], [282.0, 330.0]], \"silvio\": [[339.0, 403.0], [265.0, 428.0], [369.0, 438.0]], \"astes anteriors\": [[213.0, 280.0], [245.0, 364.0]], \"linia mitja\": [[224.0, 326.0], [195.0, 332.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mho/artifacts/data/17.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect all substructures in the 2D ultrasound and return their locations in the form of coordinates.\nThe format of output should be like {\"substructure_1\": [[x1, y1], [x2, y2], ...], ...}.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"calota\": [[313.0, 234.0], [598.0, 314.0], [201.0, 411.0], [372.0, 520.0]], \"talems\": [[441.0, 313.0], [463.0, 344.0], [455.0, 384.0]], \"cerebel\": [[511.0, 261.0], [546.0, 286.0], [475.0, 306.0], [540.0, 327.0], [471.0, 343.0], [560.0, 354.0], [494.0, 367.0], [537.0, 395.0]], \"cavum\": [[304.0, 358.0], [345.0, 362.0], [349.0, 384.0], [313.0, 398.0]], \"silvio\": [[406.0, 467.0], [361.0, 470.0], [426.0, 497.0]], \"astes anteriors\": [[277.0, 342.0], [295.0, 428.0]], \"linia mitja\": [[286.0, 390.0], [261.0, 396.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mho/artifacts/data/28.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect all substructures in the 2D ultrasound and return their locations in the form of coordinates.\nThe format of output should be like {\"substructure_1\": [[x1, y1], [x2, y2], ...], ...}.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"calota\": [[364.0, 131.0], [205.0, 283.0], [601.0, 297.0], [362.0, 438.0]], \"talems\": [[455.0, 252.0], [491.0, 289.0], [448.0, 325.0]], \"cerebel\": [[533.0, 218.0], [565.0, 255.0], [494.0, 256.0], [498.0, 286.0], [561.0, 295.0], [497.0, 327.0], [558.0, 331.0], [534.0, 365.0]], \"cavum\": [[309.0, 260.0], [354.0, 260.0], [305.0, 302.0], [362.0, 302.0]], \"silvio\": [[349.0, 387.0], [300.0, 396.0], [382.0, 407.0]], \"astes anteriors\": [[276.0, 238.0], [270.0, 334.0]], \"linia mitja\": [[259.0, 281.0], [309.0, 284.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mho/artifacts/data/31.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect all substructures in the 2D ultrasound and return their locations in the form of coordinates.\nThe format of output should be like {\"substructure_1\": [[x1, y1], [x2, y2], ...], ...}.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"calota\": [[463.0, 132.0], [186.0, 228.0], [601.0, 365.0], [413.0, 476.0]], \"talems\": [[351.0, 242.0], [308.0, 271.0], [329.0, 321.0]], \"cerebel\": [[297.0, 182.0], [243.0, 211.0], [321.0, 237.0], [235.0, 253.0], [301.0, 270.0], [219.0, 281.0], [300.0, 302.0], [245.0, 333.0]], \"cavum\": [[445.0, 296.0], [498.0, 305.0], [439.0, 330.0], [486.0, 349.0]], \"silvio\": [[400.0, 424.0], [438.0, 441.0], [369.0, 452.0]], \"astes anteriors\": [[539.0, 283.0], [502.0, 395.0]], \"linia mitja\": [[506.0, 333.0], [551.0, 349.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mho/artifacts/data/35.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect all substructures in the 2D ultrasound and return their locations in the form of coordinates.\nThe format of output should be like {\"substructure_1\": [[x1, y1], [x2, y2], ...], ...}.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"calota\": [[364.0, 177.0], [184.0, 304.0], [567.0, 363.0], [342.0, 475.0]], \"talems\": [[426.0, 301.0], [445.0, 337.0], [420.0, 373.0]], \"cerebel\": [[506.0, 282.0], [463.0, 310.0], [535.0, 323.0], [454.0, 339.0], [523.0, 352.0], [450.0, 371.0], [522.0, 379.0], [483.0, 412.0]], \"cavum\": [[301.0, 305.0], [353.0, 312.0], [297.0, 334.0], [350.0, 339.0]], \"silvio\": [[307.0, 421.0], [330.0, 425.0], [359.0, 438.0]], \"astes anteriors\": [[260.0, 269.0], [246.0, 358.0]], \"linia mitja\": [[229.0, 311.0], [280.0, 320.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mho/artifacts/data/94.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect all substructures in the 2D ultrasound and return their locations in the form of coordinates.\nThe format of output should be like {\"substructure_1\": [[x1, y1], [x2, y2], ...], ...}.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"calota\": [[314.0, 158.0], [531.0, 256.0], [194.0, 333.0], [346.0, 435.0]], \"talems\": [[398.0, 251.0], [431.0, 277.0], [414.0, 316.0]], \"cerebel\": [[454.0, 206.0], [494.0, 234.0], [427.0, 246.0], [494.0, 266.0], [437.0, 276.0], [506.0, 292.0], [442.0, 302.0], [480.0, 336.0]], \"cavum\": [[281.0, 289.0], [336.0, 293.0], [338.0, 316.0], [291.0, 327.0]], \"silvio\": [[359.0, 398.0], [305.0, 422.0], [389.0, 424.0]], \"astes anteriors\": [[261.0, 278.0], [275.0, 356.0]], \"linia mitja\": [[283.0, 314.0], [230.0, 322.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mho/artifacts/data/3.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect all substructures in the 2D ultrasound and return their locations in the form of coordinates.\nThe format of output should be like {\"substructure_1\": [[x1, y1], [x2, y2], ...], ...}.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"calota\": [[551.0, 104.0], [310.0, 210.0], [684.0, 307.0], [525.0, 416.0]], \"talems\": [[446.0, 208.0], [410.0, 239.0], [425.0, 281.0]], \"cerebel\": [[392.0, 150.0], [352.0, 172.0], [421.0, 201.0], [348.0, 216.0], [403.0, 238.0], [328.0, 257.0], [398.0, 276.0], [353.0, 297.0]], \"cavum\": [[531.0, 256.0], [586.0, 264.0], [531.0, 286.0], [583.0, 295.0]], \"silvio\": [[517.0, 375.0], [541.0, 382.0], [481.0, 391.0]], \"astes anteriors\": [[618.0, 248.0], [594.0, 342.0]], \"linia mitja\": [[580.0, 282.0], [623.0, 295.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mho/artifacts/data/14.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect all substructures in the 2D ultrasound and return their locations in the form of coordinates.\nThe format of output should be like {\"substructure_1\": [[x1, y1], [x2, y2], ...], ...}.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"calota\": [[441.0, 177.0], [633.0, 317.0], [258.0, 367.0], [490.0, 494.0]], \"talems\": [[381.0, 312.0], [356.0, 355.0], [400.0, 391.0]], \"cerebel\": [[306.0, 287.0], [349.0, 320.0], [276.0, 328.0], [347.0, 358.0], [284.0, 364.0], [360.0, 388.0], [285.0, 395.0], [331.0, 432.0]], \"cavum\": [[503.0, 316.0], [464.0, 329.0], [498.0, 350.0], [471.0, 355.0]], \"silvio\": [[488.0, 454.0], [517.0, 465.0], [468.0, 491.0]], \"astes anteriors\": [[533.0, 278.0], [543.0, 384.0]], \"linia mitja\": [[557.0, 329.0], [507.0, 336.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mho/artifacts/data/81.png"
+        ]
+    }
+]
