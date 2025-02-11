@@ -49,6 +49,12 @@ Download data:
 uv run etl.py --sft
 ```
 
+or
+
+```bash
+modal run etl.py --sft
+```
+
 Eval base model:
 
 ```bash
