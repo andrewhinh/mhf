@@ -1,6 +1,5 @@
 import json
 import multiprocessing
-import os
 import random
 import tempfile
 from pathlib import Path
@@ -15,53 +14,36 @@ from tqdm import tqdm
 from tqdm.contrib.concurrent import thread_map
 
 from utils import (
-    ARTIFACTS_PATH,
+    APP_NAME,
+    DATA_VOL_PATH,
     DEFAULT_USER_PROMPT,
     MINUTES,
-    NAME,
-    PRETRAINED_VOLUME,
     PYTHON_VERSION,
+    SPLITS,
     VOLUME_CONFIG,
 )
 
 # -----------------------------------------------------------------------------
 
 # Modal
-if modal.is_local():
-    DATA_VOL_PATH = str(ARTIFACTS_PATH / "data")
-else:
-    DATA_VOL_PATH = f"/{PRETRAINED_VOLUME}/data"
-os.makedirs(DATA_VOL_PATH, exist_ok=True)
-
-IMAGE = (
-    modal.Image.debian_slim(python_version=PYTHON_VERSION)
-    .apt_install("ffmpeg", "libsm6", "libxext6")
-    .pip_install(
-        "gimpformats>=2024",
-        "modal>=0.73.24",
-        "opencv-python>=4.11.0.86",
-        "requests>=2.32.3",
-        "tqdm>=4.67.1",
-    )
-)
+IMAGE = modal.Image.debian_slim(python_version=PYTHON_VERSION)
 TIMEOUT = 24 * 60 * MINUTES
 
-APP_NAME = f"{NAME}-etl"
-app = modal.App(name=APP_NAME)
+app = modal.App(name=f"{APP_NAME}-etl")
 
 # -----------------------------------------------------------------------------
 
 # helpers
-
-random.seed(42)
-
-ORIGINAL_JSON = Path(f"{DATA_VOL_PATH}/original.json")
-
+DATA_URL = "https://api.figshare.com/v2/collections/6984822/articles?page_size=240"
 TRAIN_SZ, VAL_SZ, TEST_SZ = 0.8, 0.1, 0.1
 
-SFT_TRAIN_JSON = Path(f"{DATA_VOL_PATH}/sft_train.json")
-SFT_VAL_JSON = Path(f"{DATA_VOL_PATH}/sft_val.json")
-SFT_TEST_JSON = Path(f"{DATA_VOL_PATH}/sft_test.json")
+
+@app.function(
+    image=IMAGE,
+    timeout=TIMEOUT,
+)
+def load_json(sample: dict):
+    return json.loads(requests.get(sample["url"]).text)
 
 
 def clean_ux(image):
@@ -133,6 +115,11 @@ def load_xcf(path):
     return image, labels, points
 
 
+@app.function(
+    image=IMAGE,
+    volumes=VOLUME_CONFIG,
+    timeout=TIMEOUT,
+)
 def process_xcf(url: str, i: int):
     xcf_data = requests.get(url).content
     tmp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".xcf").name
@@ -141,17 +128,9 @@ def process_xcf(url: str, i: int):
     image, labels, points = load_xcf(tmp_file)
     names_to_points = makeDict(labels, points)
     pil_image = Image.fromarray(image)
-    img_path = Path(f"{DATA_VOL_PATH}/{i}.png")
+    img_path = DATA_VOL_PATH / f"{i}.png"
     pil_image.save(img_path)
     return names_to_points, i
-
-
-@app.function(
-    image=IMAGE,
-    timeout=TIMEOUT,
-)
-def load_json(sample: dict):
-    return json.loads(requests.get(sample["url"]).text)
 
 
 def write_sft_json(json_path: Path, xcfs: list):
@@ -174,7 +153,7 @@ def write_sft_json(json_path: Path, xcfs: list):
                             ),
                         },
                     ],
-                    "images": [f"{DATA_VOL_PATH}/{xcf[1]}.png"],
+                    "images": [str(DATA_VOL_PATH / f"{xcf[1]}.png")],
                 }
                 for xcf in xcfs
             ],
@@ -191,8 +170,8 @@ def main(sft: bool, dpo: bool):
         raise ValueError("Must specify at least one of `sft` or `dpo`")
 
     if sft:
-        with open(ORIGINAL_JSON, "r") as f:
-            data = json.load(f)
+        response = requests.get(DATA_URL)
+        data = response.json()
 
         if modal.is_local():
             json_data = list(
@@ -205,7 +184,7 @@ def main(sft: bool, dpo: bool):
                 )
             )
         else:
-            json_data = load_json.map(data)
+            json_data = list(load_json.map(data))
 
         urls = [
             sample["files"][0]["download_url"]
@@ -214,16 +193,19 @@ def main(sft: bool, dpo: bool):
         ]
 
         n_unique = len(urls)
-        xcfs = list(
-            tqdm(
-                thread_map(
-                    process_xcf,
-                    urls,
-                    range(n_unique),
-                    max_workers=multiprocessing.cpu_count(),
+        if modal.is_local():
+            xcfs = list(
+                tqdm(
+                    thread_map(
+                        process_xcf.local,
+                        urls,
+                        range(n_unique),
+                        max_workers=multiprocessing.cpu_count(),
+                    )
                 )
             )
-        )
+        else:
+            xcfs = list(process_xcf.starmap([(url, i) for i, url in enumerate(urls)]))
 
         n_train = int(TRAIN_SZ * n_unique)
         n_val = int(VAL_SZ * n_unique)
@@ -233,10 +215,8 @@ def main(sft: bool, dpo: bool):
             xcfs[n_train : n_train + n_val],
             xcfs[n_train + n_val :],
         )
-        for json_path, xcfs in zip(
-            [SFT_TRAIN_JSON, SFT_VAL_JSON, SFT_TEST_JSON], [train, val, test]
-        ):
-            write_sft_json(json_path, xcfs)
+        for split, xcfs in zip(SPLITS, [train, val, test]):
+            write_sft_json(DATA_VOL_PATH / f"sft_{split}.json", xcfs)
 
     if dpo:
         pass

@@ -5,12 +5,23 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "flash-attn>=2.7.4.post1",
     "gimpformats>=2024",
+    "hf-transfer>=0.1.9",
+    "huggingface-hub>=0.28.1",
     "ipykernel>=6.29.5",
     "matplotlib>=3.10.0",
     "modal>=0.73.24",
+    "more-itertools>=10.6.0",
     "opencv-python>=4.11.0.86",
     "python-dotenv>=1.0.1",
+    "pyyaml>=6.0.2",
     "requests>=2.32.3",
+    "scipy>=1.15.1",
     "tqdm>=4.67.1",
+    "transformers",
+    "vllm>=0.7.2",
 ]
+
+[tool.uv.sources]
+transformers = { git = "https://github.com/huggingface/transformers.git" }
