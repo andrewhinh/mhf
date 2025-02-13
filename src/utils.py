@@ -19,15 +19,14 @@ Detect all substructures in the 2D ultrasound and return their locations in the 
 Here are the possible substructures and number of points that may be predicted for each substructure.
 - calota, min=4, max=6
 - cavum, min=4, max=5
-- Córtex, min=2, max=2
 - silvio, min=3, max=3
 - astes anteriors, min=0, max=2
 - talems, min=3, max=4
 - linia mitja, min=2, max=2
 - cerebel, min=6, max=8
 Notes:
-- the ultrasounds are of size 600 (width) x 800 (height), which indicates the limits of the x and y coordinates.
-- multiple but not all substructures may not be present in the ultrasound.
+- the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.
+- all substructures are present in the ultrasound.
 """
 
 # Modal

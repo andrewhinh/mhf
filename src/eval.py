@@ -44,9 +44,9 @@ ENFORCE_EAGER = False
 MAX_NUM_SEQS = 32 if modal.is_local() else 128
 MIN_PIXELS = 28 * 28
 MAX_PIXELS = 1280 * 28 * 28
-TEMPERATURE = 0.0
+TEMPERATURE = 0.1
 TOP_P = 0.001
-REPEATION_PENALTY = 1.05
+REPEATION_PENALTY = 1.1
 STOP_TOKEN_IDS = []
 MAX_MODEL_LEN = 8192 if modal.is_local() else 32768
 MAX_TOKENS = 4096
@@ -265,7 +265,7 @@ def summarize_msa(msa):
             "precision": round(point_precision, 2),
             "recall": round(point_recall, 2),
             "f1": round(point_f1, 2),
-            "avg_euclidean_distance (matched)": round(avg_euclidean_distance, 2),
+            "avg_euclidean_distance": round(avg_euclidean_distance, 2),
         },
     }
 
@@ -406,9 +406,33 @@ def main(base: bool, sft: bool, dpo: bool, quant: bool):
 
     for split, msa in split_msa.items():
         summary = summarize_msa(msa)
-        print(f"Metrics for split '{split}':")
-        print("  Label-level metrics:", summary["label_metrics"])
-        print("  Point-level metrics:", summary["point_metrics"])
+
+        print(f"\n{'='*50}")
+        print(f"Metrics for Split: '{split}'")
+        print(f"{'='*50}")
+        print(f"{'Metric':<25}{'Value':>10}")
+        print(f"{'-'*50}")
+
+        # Label-level metrics
+        print(
+            f"{'Label-Level Precision':<25}{summary['label_metrics']['precision']:.2f}"
+        )
+        print(f"{'Label-Level Recall':<25}{summary['label_metrics']['recall']:.2f}")
+        print(f"{'Label-Level F1-Score':<25}{summary['label_metrics']['f1']:.2f}")
+
+        # Separator for point-level metrics
+        print(f"{'-'*50}")
+
+        # Point-level metrics
+        print(
+            f"{'Point-Level Precision':<25}{summary['point_metrics']['precision']:.2f}"
+        )
+        print(f"{'Point-Level Recall':<25}{summary['point_metrics']['recall']:.2f}")
+        print(f"{'Point-Level F1-Score':<25}{summary['point_metrics']['f1']:.2f}")
+        print(
+            f"{'Avg. Euclidean Distance':<25}{summary['point_metrics']['avg_euclidean_distance']:.2f}"
+        )
+        print(f"{'='*50}")
 
 
 @app.function(
