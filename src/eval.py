@@ -41,7 +41,7 @@ BASE_MODEL = "Qwen/Qwen2.5-VL-3B-Instruct"
 
 KV_CACHE_DTYPE = None  # "fp8_e5m2"
 ENFORCE_EAGER = False
-MAX_NUM_SEQS = 64 if modal.is_local() else 128
+MAX_NUM_SEQS = 32 if modal.is_local() else 128
 MIN_PIXELS = 28 * 28
 MAX_PIXELS = 1280 * 28 * 28
 TEMPERATURE = 0.0
@@ -141,7 +141,7 @@ def compute_msa_per_label(gts, preds):
     return {
         "average_euclidean_distance": np.mean(matched_distances)
         if num_matched > 0
-        else float("inf"),
+        else 0.0,
         "num_matched": num_matched,
         "false_positives": m - num_matched,
         "false_negatives": n - num_matched,
@@ -151,44 +151,52 @@ def compute_msa_per_label(gts, preds):
 def compute_msa(gt_list, pred_list):
     all_metrics = []
     for gt_labels, pred_labels in zip(gt_list, pred_list):
-        gt_ids, pred_ids = list(gt_labels.keys()), list(pred_labels.keys())
-        n, m = len(gt_ids), len(pred_ids)
-        cost_matrix = np.full((n, m), float("inf"))
-        for i, gt_label in enumerate(gt_ids):
-            for j, pred_label in enumerate(pred_ids):
-                # If both labels have points, compute pairwise distances
-                if len(gt_labels[gt_label]) > 0 and len(pred_labels[pred_label]) > 0:
-                    pairwise_distances = [
-                        np.linalg.norm(np.array(gt_point) - np.array(pred_point))
-                        for gt_point in gt_labels[gt_label]
-                        for pred_point in pred_labels[pred_label]
-                    ]
-                    cost_matrix[i, j] = np.mean(pairwise_distances)
-        gt_indices, pred_indices = linear_sum_assignment(cost_matrix)
+        gt_ids, pred_ids = set(gt_labels.keys()), set(pred_labels.keys())
+        matched_ids = gt_ids & pred_ids
+        false_negative_labels = gt_ids - pred_ids
+        false_positive_labels = pred_ids - gt_ids
         metrics = {
-            "num_matched_labels": len(gt_indices),
-            "false_positive_labels": m - len(gt_indices),
-            "false_negative_labels": n - len(gt_indices),
+            "num_matched_labels": len(matched_ids),
+            "false_positive_labels": len(false_positive_labels),
+            "false_negative_labels": len(false_negative_labels),
             "point_metrics_per_label": [],
         }
-        for i, j in zip(gt_indices, pred_indices):
-            gt_points = gt_labels[gt_label]
-            pred_points = pred_labels[pred_label]
-            # Compute point-level metrics even if one of the labels is empty
-            point_metrics = (
-                compute_msa_per_label(gt_points, pred_points)
-                if len(gt_points) > 0 and len(pred_points) > 0
-                else {
-                    "average_euclidean_distance": float("inf"),
+        for label in matched_ids:
+            gt_points = gt_labels[label]
+            pred_points = pred_labels[label]
+            if len(gt_points) > 0 and len(pred_points) > 0:
+                metrics["point_metrics_per_label"].append(
+                    {"label": label, **compute_msa_per_label(gt_points, pred_points)}
+                )
+            elif len(gt_points) <= 0:
+                false_negative_labels.add(label)
+            elif len(pred_points) <= 0:
+                false_positive_labels.add(label)
+
+        # Add unmatched labels as metrics (FN for ground truth, FP for predictions)
+        for label in false_negative_labels:
+            metrics["point_metrics_per_label"].append(
+                {
+                    "label": label,
+                    "average_euclidean_distance": 0.0,
                     "num_matched": 0,
-                    "false_positives": len(pred_points),
-                    "false_negatives": len(gt_points),
-                    "precision": 0.0 if len(pred_points) > 0 else 1.0,
-                    "recall": 0.0 if len(gt_points) > 0 else 1.0,
+                    "false_positives": 0,
+                    "false_negatives": len(gt_labels[label]),
+                    "precision": 0.0,
+                    "recall": 0.0,
                 }
             )
+        for label in false_positive_labels:
             metrics["point_metrics_per_label"].append(
-                {"label": (gt_ids[i], pred_ids[j]), **point_metrics}
+                {
+                    "label": label,
+                    "average_euclidean_distance": 0.0,
+                    "num_matched": 0,
+                    "false_positives": len(pred_labels[label]),
+                    "false_negatives": 0,
+                    "precision": 0.0,
+                    "recall": 0.0,
+                }
             )
         all_metrics.append(metrics)
     return all_metrics
@@ -257,7 +265,7 @@ def summarize_msa(msa):
             "precision": round(point_precision, 2),
             "recall": round(point_recall, 2),
             "f1": round(point_f1, 2),
-            "avg_euclidean_distance": round(avg_euclidean_distance, 2),
+            "avg_euclidean_distance (matched)": round(avg_euclidean_distance, 2),
         },
     }
 
@@ -326,6 +334,11 @@ def run_model(img_paths: list[Path], model: str, quant: bool) -> list[dict]:
         )
     outputs = llm.chat(conversations, sampling_params, use_tqdm=True)
     preds = [out.outputs[0].text.strip() for out in outputs]
+    for pred in preds:
+        try:
+            json.loads(pred)
+        except Exception:
+            print(pred)
     preds = [json.loads(pred)["substructures"] for pred in preds]
     return preds
 

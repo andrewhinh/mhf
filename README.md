@@ -4,18 +4,18 @@ MHF Automated Labelling
 
 ## results
 
-Baseline evaluation:
+Baseline prompt with EDA info:
 
 ```bash
 Metrics for split 'train':
-  Label-level metrics: {'precision': 1.0, 'recall': 0.29, 'f1': 0.45}
-  Point-level metrics: {'precision': 0.67, 'recall': 1.0, 'f1': 0.8, 'avg_euclidean_distance': 160.72}
+  Label-level metrics: {'precision': 0.88, 'recall': 1.0, 'f1': 0.93}
+  Point-level metrics: {'precision': 0.42, 'recall': 0.92, 'f1': 0.58, 'avg_euclidean_distance (matched)': 151.38}
 Metrics for split 'valid':
-  Label-level metrics: {'precision': 1.0, 'recall': 0.25, 'f1': 0.4}
-  Point-level metrics: {'precision': 0.67, 'recall': 1.0, 'f1': 0.8, 'avg_euclidean_distance': 138.82}
+  Label-level metrics: {'precision': 0.86, 'recall': 0.97, 'f1': 0.91}
+  Point-level metrics: {'precision': 0.36, 'recall': 0.95, 'f1': 0.52, 'avg_euclidean_distance (matched)': 138.87}
 Metrics for split 'test':
-  Label-level metrics: {'precision': 1.0, 'recall': 0.26, 'f1': 0.41}
-  Point-level metrics: {'precision': 0.67, 'recall': 1.0, 'f1': 0.8, 'avg_euclidean_distance': 152.89}
+  Label-level metrics: {'precision': 0.88, 'recall': 1.0, 'f1': 0.93}
+  Point-level metrics: {'precision': 0.54, 'recall': 0.92, 'f1': 0.68, 'avg_euclidean_distance (matched)': 162.31}
 ```
 
 ## setup

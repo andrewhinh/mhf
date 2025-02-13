@@ -6,7 +6,7 @@ import modal
 
 random.seed(42)
 
-APP_NAME = "mho"
+APP_NAME = "mhf"
 SPLITS = ["train", "valid", "test"]
 PARENT_PATH = Path(__file__).parent.parent
 ARTIFACTS_PATH = PARENT_PATH / "artifacts"
@@ -16,7 +16,18 @@ DEFAULT_IMG_URL = "https://ndownloader.figshare.com/files/46283905"
 DEFAULT_SYSTEM_PROMPT = "You are a helpful assistant."
 DEFAULT_USER_PROMPT = """
 Detect all substructures in the 2D ultrasound and return their locations in the form of xy-point-based outlines.
-Make sure for each detected substructure, the outline should contain at least 3 xy-points.
+Here are the possible substructures and number of points that may be predicted for each substructure.
+- calota, min=4, max=6
+- cavum, min=4, max=5
+- Córtex, min=2, max=2
+- silvio, min=3, max=3
+- astes anteriors, min=0, max=2
+- talems, min=3, max=4
+- linia mitja, min=2, max=2
+- cerebel, min=6, max=8
+Notes:
+- the ultrasounds are of size 600 (width) x 800 (height), which indicates the limits of the x and y coordinates.
+- multiple but not all substructures may not be present in the ultrasound.
 """
 
 # Modal
