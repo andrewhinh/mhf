@@ -489,17 +489,47 @@ modal run src/eval.py --dpo --quant
 Test the API:
 
 ```bash
-uv run api.py
+uv run src/api.py --test
 ```
 
 or
 
 ```bash
-modal run api.py
+modal run src/api.py
+```
+
+Serve the API:
+
+```bash
+uv run src/api.py
+```
+
+or
+
+```bash
+modal serve src/api.py
 ```
 
 Deploy the API:
 
 ```bash
-modal deploy --env=main api.py
+modal deploy --env=main src/api.py
+```
+
+Test the website:
+
+```bash
+uv run src/app.py
+```
+
+or
+
+```bash
+modal serve src/app.py
+```
+
+Deploy the website:
+
+```bash
+modal deploy --env=main src/app.py
 ```
