@@ -69,22 +69,19 @@ GPU_IMAGE = (
         "gimpformats>=2024",
         "hf-transfer>=0.1.9",
         "huggingface-hub>=0.28.1",
-        "ipykernel>=6.29.5",
-        "matplotlib>=3.10.0",
-        "modal>=0.73.24",
         "more-itertools>=10.6.0",
+        "ninja>=1.11.1.3",  # required to build flash-attn
         "opencv-python>=4.11.0.86",
-        "python-dotenv>=1.0.1",
+        "packaging>=24.2",  # required to build flash-attn
         "pyyaml>=6.0.2",
         "requests>=2.32.3",
+        "scikit-learn>=1.6.1",
         "scipy>=1.15.1",
+        "torch>=2.5.1",
         "tqdm>=4.67.1",
-        "transformers @ git+https://github.com/huggingface/transformers.git",
+        "transformers @ git+https://github.com/huggingface/transformers.git@9985d06add07a4cc691dc54a7e34f54205c04d40",
         "vllm>=0.7.2",
-        "ninja==1.11.1",  # required to build flash-attn
-        "packaging==23.1",  # required to build flash-attn
-        "wheel==0.41.2",  # required to build flash-attn
-        "torch==2.5.1",  # required to build flash-attn,
+        "wheel>=0.45.1",  # required to build flash-attn
     )
     .run_commands(  # add flash-attn
         "pip install flash-attn==2.7.2.post1 --no-build-isolation"

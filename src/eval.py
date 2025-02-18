@@ -12,6 +12,8 @@ from huggingface_hub import login
 from more_itertools import chunked
 from pydantic import BaseModel
 from scipy.optimize import linear_sum_assignment
+from scipy.spatial.distance import directed_hausdorff
+from sklearn.metrics import auc, precision_recall_curve, roc_auc_score
 from tqdm import tqdm
 from vllm import LLM, SamplingParams
 from vllm.sampling_params import GuidedDecodingParams
@@ -126,134 +128,220 @@ app = modal.App(name=f"{APP_NAME}-eval")
 
 # -----------------------------------------------------------------------------
 
+
 # helpers
-
-
-def compute_msa_per_label(gts, preds):
+def point_level_metrics(gts, preds, threshold=20.0):
+    """
+    1) Uses Hungarian algorithm (linear_sum_assignment) to find a minimal-cost matching
+       between ground-truth (gts) and predicted points (preds).
+    2) If the distance of a matched pair > threshold, that match is considered invalid
+       => effectively FP + FN instead of TP.
+    3) Returns a dict with total TP, FP, FN, distances, plus a 'y_true_list' and 'score_list'
+       for computing a global AUC-ROC/AUC-PR across all samples.
+    """
     n, m = len(gts), len(preds)
     cost_matrix = np.zeros((n, m))
+    # Hungarian assignment: each GT i is matched to exactly one Pred j if possible
     for i in range(n):
         for j in range(m):
             cost_matrix[i, j] = np.linalg.norm(np.array(gts[i]) - np.array(preds[j]))
     gt_indices, pred_indices = linear_sum_assignment(cost_matrix)
     matched_distances = cost_matrix[gt_indices, pred_indices]
     num_matched = len(gt_indices)
+
+    # matched pair is a "true positive" if distance <= threshold,
+    # otherwise it's effectively invalid => that GT is still unfilled, that Pred is spurious.
+    tp = 0
+    fp = 0
+    fn = 0
+    for dist in matched_distances:
+        if dist <= threshold:
+            tp += 1
+        else:
+            fp += 1
+            fn += 1
+    fp += m - num_matched  # unmatched predictions => FP
+    fn += n - num_matched  # unmatched GT => FN
+
+    # build y_true / score arrays for computing AUC per sample
+    # - matched (distance <= threshold) => y_true=1; else 0
+    # - score = -distance so smaller distance => higher "confidence"
+    # For the unmatched predictions, we mark them as y_true=0, very negative score
+    y_true_list = []
+    score_list = []
+    for dist in matched_distances:
+        y_true_list.append(1 if dist <= threshold else 0)
+        score_list.append(-dist)
+    unmatched_fp = m - num_matched  # already added to fp
+    for _ in range(unmatched_fp):
+        y_true_list.append(0)
+        score_list.append(-9999.0)
+
+    hausdorff = 0.0
+    euclid_sum = 0.0
+    if num_matched > 0:
+        hausdorff = max(
+            directed_hausdorff(gts, preds)[0], directed_hausdorff(preds, gts)[0]
+        )
+        euclid_sum = float(np.sum(matched_distances))
+
     return {
-        "average_euclidean_distance": np.mean(matched_distances)
-        if num_matched > 0
-        else 0.0,
-        "num_matched": num_matched,
-        "false_positives": m - num_matched,
-        "false_negatives": n - num_matched,
+        "hausdorff_distance": hausdorff,
+        "euclidean_distance": euclid_sum,
+        "tp": tp,
+        "fp": fp,
+        "fn": fn,
+        # For global AUC
+        "y_true_list": y_true_list,
+        "score_list": score_list,
     }
 
 
-def compute_msa(gt_list, pred_list):
+def label_and_point_metrics(
+    gt_list, pred_list
+):  # [{label: points for label in gt}, {label: points for label in pred}]
+    """
+    Processes a list of samples:
+      gt_list[i] = {label: [[x0,y0], [x1,y1], ...], ...}
+      pred_list[i] = {label: [[x0,y0], [x1,y1], ...], ...}
+
+    Returns an array of sample-level dictionaries, each containing:
+      - tp, fp, fn for label presence/absence (did we predict label X at all?)
+      - "point_metrics": list of dictionaries with
+         { label: str, tp, fp, fn, distances, y_true_list, score_list, ... }
+         on a per-label basis (point-level).
+    """
     all_metrics = []
-    for gt_labels, pred_labels in zip(gt_list, pred_list):
+    for gt_labels, pred_labels in zip(
+        gt_list, pred_list
+    ):  # {label: points for label in gt}, {label: points for label in pred}
         gt_ids, pred_ids = set(gt_labels.keys()), set(pred_labels.keys())
         matched_ids = gt_ids & pred_ids
         false_negative_labels = gt_ids - pred_ids
         false_positive_labels = pred_ids - gt_ids
         metrics = {
-            "num_matched_labels": len(matched_ids),
-            "false_positive_labels": len(false_positive_labels),
-            "false_negative_labels": len(false_negative_labels),
-            "point_metrics_per_label": [],
+            "tp": len(matched_ids),
+            "fp": len(false_positive_labels),
+            "fn": len(false_negative_labels),
+            "point_metrics": [],
         }
         for label in matched_ids:
-            gt_points = gt_labels[label]
-            pred_points = pred_labels[label]
+            gt_points = gt_labels[label]  # [[x0, y0], [x1, y1], ...]
+            pred_points = pred_labels[label]  # [[x0, y0], [x1, y1], ...]
             if len(gt_points) > 0 and len(pred_points) > 0:
-                metrics["point_metrics_per_label"].append(
-                    {"label": label, **compute_msa_per_label(gt_points, pred_points)}
+                metrics["point_metrics"].append(
+                    {
+                        "label": label,
+                        **point_level_metrics(gt_points, pred_points),
+                    }
                 )
-            elif len(gt_points) <= 0:
-                false_negative_labels.add(label)
-            elif len(pred_points) <= 0:
-                false_positive_labels.add(label)
-
-        # Add unmatched labels as metrics (FN for ground truth, FP for predictions)
-        for label in false_negative_labels:
-            metrics["point_metrics_per_label"].append(
-                {
-                    "label": label,
-                    "average_euclidean_distance": 0.0,
-                    "num_matched": 0,
-                    "false_positives": 0,
-                    "false_negatives": len(gt_labels[label]),
-                    "precision": 0.0,
-                    "recall": 0.0,
-                }
-            )
-        for label in false_positive_labels:
-            metrics["point_metrics_per_label"].append(
-                {
-                    "label": label,
-                    "average_euclidean_distance": 0.0,
-                    "num_matched": 0,
-                    "false_positives": len(pred_labels[label]),
-                    "false_negatives": 0,
-                    "precision": 0.0,
-                    "recall": 0.0,
-                }
-            )
         all_metrics.append(metrics)
     return all_metrics
 
 
-def summarize_msa(msa):
-    total_labels = {"matched": 0, "fp": 0, "fn": 0}
-    total_points = {"matched": 0, "fp": 0, "fn": 0, "euclidean_distance": 0.0}
+def summarize(lbl_pt_metrics):
+    """
+    Aggregates:
+      1) Label-level metrics from total label tp/fp/fn
+      2) Point-level metrics from sum of point-level tp,fp,fn, distances
+      3) *Global AUC* per label by combining all (y_true, score) across samples
+    """
+    # Label-level sums
+    tp_labels = 0
+    fp_labels = 0
+    fn_labels = 0
 
-    for metric in msa:
-        total_labels["matched"] += metric["num_matched_labels"]
-        total_labels["fp"] += metric["false_positive_labels"]
-        total_labels["fn"] += metric["false_negative_labels"]
-        for point_metric in metric["point_metrics_per_label"]:
-            total_points["matched"] += point_metric["num_matched"]
-            total_points["fp"] += point_metric["false_positives"]
-            total_points["fn"] += point_metric["false_negatives"]
-            total_points["euclidean_distance"] += (
-                point_metric["average_euclidean_distance"] * point_metric["num_matched"]
-            )
+    # Per-label aggregator for point-level metrics
+    # label -> aggregated PointMetric
+    label_metrics_map = {}
+    label_ytrue_scores = {}  # label -> (list_of_y_true, list_of_scores)
+    for metric in lbl_pt_metrics:
+        tp_labels += metric["tp"]
+        fp_labels += metric["fp"]
+        fn_labels += metric["fn"]
 
-    # Compute metrics
-    label_precision = (
-        total_labels["matched"] / (total_labels["matched"] + total_labels["fp"])
-        if total_labels["fp"] + total_labels["matched"] > 0
-        else 0.0
-    )
-    label_recall = (
-        total_labels["matched"] / (total_labels["matched"] + total_labels["fn"])
-        if total_labels["fn"] + total_labels["matched"] > 0
-        else 0.0
-    )
-    label_f1 = (
-        2 * label_precision * label_recall / (label_precision + label_recall)
-        if label_precision + label_recall > 0
-        else 0.0
-    )
-    point_precision = (
-        total_points["matched"] / (total_points["matched"] + total_points["fp"])
-        if total_points["fp"] + total_points["matched"] > 0
-        else 0.0
-    )
-    point_recall = (
-        total_points["matched"] / (total_points["matched"] + total_points["fn"])
-        if total_points["fn"] + total_points["matched"] > 0
-        else 0.0
-    )
-    point_f1 = (
-        2 * point_precision * point_recall / (point_precision + point_recall)
-        if point_precision + point_recall > 0
-        else 0.0
-    )
-    avg_euclidean_distance = (
-        total_points["euclidean_distance"] / total_points["matched"]
-        if total_points["matched"] > 0
-        else float("inf")
-    )
+        for pm_dict in metric["point_metrics"]:
+            label = pm_dict["label"]
+            if label not in label_metrics_map:
+                label_metrics_map[label] = {
+                    "hausdorff_distance": 0.0,
+                    "euclidean_distance": 0.0,
+                    "tp": 0,
+                    "fp": 0,
+                    "fn": 0,
+                }
+                label_ytrue_scores[label] = ([], [])
+
+            label_metrics_map[label]["hausdorff_distance"] += pm_dict[
+                "hausdorff_distance"
+            ]
+            label_metrics_map[label]["euclidean_distance"] += pm_dict[
+                "euclidean_distance"
+            ]
+            label_metrics_map[label]["tp"] += pm_dict["tp"]
+            label_metrics_map[label]["fp"] += pm_dict["fp"]
+            label_metrics_map[label]["fn"] += pm_dict["fn"]
+            y_true_acc, score_acc = label_ytrue_scores[label]
+            y_true_acc.extend(pm_dict["y_true_list"])
+            score_acc.extend(pm_dict["score_list"])
+
+    # label-level metrics from the aggregated counts
+    label_precision = 0.0
+    label_recall = 0.0
+    label_f1 = 0.0
+
+    if (tp_labels + fp_labels) > 0:
+        label_precision = tp_labels / (tp_labels + fp_labels)
+    if (tp_labels + fn_labels) > 0:
+        label_recall = tp_labels / (tp_labels + fn_labels)
+    if (label_precision + label_recall) > 0:
+        label_f1 = 2 * label_precision * label_recall / (label_precision + label_recall)
+
+    # point-level metrics from the aggregated counts
+    point_metrics_dict = {}
+    for label, agg_dict in label_metrics_map.items():
+        # Recompute precision/recall/f1 from aggregated tp/fp/fn
+        ttp = agg_dict["tp"]
+        tfp = agg_dict["fp"]
+        tfn = agg_dict["fn"]
+
+        precision = 0.0
+        recall = 0.0
+        f1_val = 0.0
+        if (ttp + tfp) > 0:
+            precision = ttp / (ttp + tfp)
+        if (ttp + tfn) > 0:
+            recall = ttp / (ttp + tfn)
+        if (precision + recall) > 0:
+            f1_val = 2 * precision * recall / (precision + recall)
+
+        y_true_list, score_list = label_ytrue_scores[label]
+        auc_roc_val = 0.0
+        auc_pr_val = 0.0
+        # Check if there's at least 1 positive and 1 negative
+        if 1 in y_true_list and 0 in y_true_list:
+            try:
+                auc_roc_val = roc_auc_score(y_true_list, score_list)
+            except ValueError:
+                auc_roc_val = 0.0
+            try:
+                precs, recs, _ = precision_recall_curve(y_true_list, score_list)
+                auc_pr_val = auc(recs, precs)
+            except ValueError:
+                auc_pr_val = 0.0
+
+        point_metrics_dict[label] = {
+            "hausdorff_distance": round(agg_dict["hausdorff_distance"], 2),
+            "euclidean_distance": round(agg_dict["euclidean_distance"], 2),
+            "tp": ttp,
+            "fp": tfp,
+            "fn": tfn,
+            "precision": round(precision, 3),
+            "recall": round(recall, 3),
+            "f1": round(f1_val, 3),
+            "auc_roc": round(auc_roc_val, 3),
+            "auc_pr": round(auc_pr_val, 3),
+        }
 
     return {
         "label_metrics": {
@@ -261,12 +349,7 @@ def summarize_msa(msa):
             "recall": round(label_recall, 2),
             "f1": round(label_f1, 2),
         },
-        "point_metrics": {
-            "precision": round(point_precision, 2),
-            "recall": round(point_recall, 2),
-            "f1": round(point_f1, 2),
-            "avg_euclidean_distance": round(avg_euclidean_distance, 2),
-        },
+        "point_metrics": point_metrics_dict,
     }
 
 
@@ -352,7 +435,7 @@ def main(base: bool, sft: bool, dpo: bool, quant: bool):
     if not base and not sft and not dpo:
         raise ValueError("Must specify at least one of `base`, `sft`, or `dpo`)")
 
-    split_msa = {}
+    split_metrics = {}
     for split in SPLITS:
         with open(DATA_VOL_PATH / f"sft_{split}.json", "r") as f:
             read_ds = yaml.safe_load(f)
@@ -402,37 +485,10 @@ def main(base: bool, sft: bool, dpo: bool, quant: bool):
             for pred in preds
         ]
 
-        split_msa[split] = compute_msa(labels, preds)
+        split_metrics[split] = label_and_point_metrics(labels, preds)
 
-    for split, msa in split_msa.items():
-        summary = summarize_msa(msa)
-
-        print(f"\n{'='*50}")
-        print(f"Metrics for Split: '{split}'")
-        print(f"{'='*50}")
-        print(f"{'Metric':<25}{'Value':>10}")
-        print(f"{'-'*50}")
-
-        # Label-level metrics
-        print(
-            f"{'Label-Level Precision':<25}{summary['label_metrics']['precision']:.2f}"
-        )
-        print(f"{'Label-Level Recall':<25}{summary['label_metrics']['recall']:.2f}")
-        print(f"{'Label-Level F1-Score':<25}{summary['label_metrics']['f1']:.2f}")
-
-        # Separator for point-level metrics
-        print(f"{'-'*50}")
-
-        # Point-level metrics
-        print(
-            f"{'Point-Level Precision':<25}{summary['point_metrics']['precision']:.2f}"
-        )
-        print(f"{'Point-Level Recall':<25}{summary['point_metrics']['recall']:.2f}")
-        print(f"{'Point-Level F1-Score':<25}{summary['point_metrics']['f1']:.2f}")
-        print(
-            f"{'Avg. Euclidean Distance':<25}{summary['point_metrics']['avg_euclidean_distance']:.2f}"
-        )
-        print(f"{'='*50}")
+    for split, metrics in split_metrics.items():
+        print(summarize(metrics))
 
 
 @app.function(

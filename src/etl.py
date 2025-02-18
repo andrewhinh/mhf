@@ -17,8 +17,8 @@ from utils import (
     APP_NAME,
     DATA_VOL_PATH,
     DEFAULT_USER_PROMPT,
+    GPU_IMAGE,
     MINUTES,
-    PYTHON_VERSION,
     SPLITS,
     VOLUME_CONFIG,
 )
@@ -26,7 +26,6 @@ from utils import (
 # -----------------------------------------------------------------------------
 
 # Modal
-IMAGE = modal.Image.debian_slim(python_version=PYTHON_VERSION)
 TIMEOUT = 24 * 60 * MINUTES
 
 app = modal.App(name=f"{APP_NAME}-etl")
@@ -39,7 +38,7 @@ TRAIN_SZ, VAL_SZ, TEST_SZ = 0.8, 0.1, 0.1
 
 
 @app.function(
-    image=IMAGE,
+    image=GPU_IMAGE,
     timeout=TIMEOUT,
 )
 def load_json(sample: dict):
@@ -116,7 +115,7 @@ def load_xcf(path):
 
 
 @app.function(
-    image=IMAGE,
+    image=GPU_IMAGE,
     volumes=VOLUME_CONFIG,
     timeout=TIMEOUT,
 )
@@ -223,7 +222,7 @@ def main(sft: bool, dpo: bool):
 
 
 @app.function(
-    image=IMAGE,
+    image=GPU_IMAGE,
     volumes=VOLUME_CONFIG,
     timeout=TIMEOUT,
 )
