@@ -1,6 +1,5 @@
 import base64
 import json
-import os
 from itertools import chain
 from pathlib import Path
 
@@ -8,7 +7,6 @@ import modal
 import numpy as np
 import torch
 import yaml
-from huggingface_hub import login
 from more_itertools import chunked
 from pydantic import BaseModel
 from scipy.optimize import linear_sum_assignment
@@ -20,12 +18,18 @@ from vllm.sampling_params import GuidedDecodingParams
 
 from utils import (
     APP_NAME,
+    BASE_HF_MODEL,
+    BASE_QUANT_MODEL,
     DATA_VOL_PATH,
     DEFAULT_SYSTEM_PROMPT,
     DEFAULT_USER_PROMPT,
+    DPO_HF_MODEL,
+    DPO_QUANT_MODEL,
     GPU_IMAGE,
     MINUTES,
     SECRETS,
+    SFT_HF_MODEL,
+    SFT_QUANT_MODEL,
     SPLITS,
     VOLUME_CONFIG,
 )
@@ -33,13 +37,6 @@ from utils import (
 # -----------------------------------------------------------------------------
 
 # vlm config
-TOKENIZER = "Qwen/Qwen2.5-VL-3B-Instruct"
-BASE_MODEL = "Qwen/Qwen2.5-VL-3B-Instruct"
-# BASE_QUANT_MODEL = f"andrewhinh/{APP_NAME}-Qwen2.5-VL-3B-Instruct-AWQ"
-# SFT_MODEL = f"andrewhinh/{APP_NAME}-qwen2.5-vl-3b-instruct-lora-sft-merged"
-# SFT_QUANT_MODEL = f"andrewhinh/{APP_NAME}-qwen2.5-vl-3b-instruct-lora-sft-merged-awq"
-# DPO_MODEL = f"andrewhinh/{APP_NAME}-qwen2.5-vl-3b-instruct-lora-dpo-merged"
-# DPO_QUANT_MODEL = f"andrewhinh/{APP_NAME}-qwen2.5-vl-3b-instruct-lora-dpo-merged-awq"
 
 KV_CACHE_DTYPE = None  # "fp8_e5m2"
 ENFORCE_EAGER = False
@@ -75,44 +72,8 @@ class Substructures(BaseModel):
 JSON_STRUCTURE = Substructures.model_json_schema()
 
 
-## container startup fn
-def download_models():
-    from huggingface_hub import snapshot_download
-
-    login(token=os.getenv("HF_TOKEN"), new_session=False)
-
-    for model in [
-        TOKENIZER,
-        BASE_MODEL,
-        # BASE_QUANT_MODEL,
-        # SFT_MODEL,
-        # SFT_QUANT_MODEL,
-        # DPO_MODEL,
-        # DPO_QUANT_MODEL,
-    ]:
-        if not os.path.exists(model):
-            snapshot_download(
-                model,
-                ignore_patterns=["*.pt", "*.bin"],
-            )
-        else:  # check if preprocessor_config.json was successfully copied; if not, do so
-            if not os.path.exists(f"{model}/preprocessor_config.json"):
-                tok_path = snapshot_download(
-                    model,
-                    ignore_patterns=["*.pt", "*.bin"],
-                )
-                os.rename(
-                    f"{tok_path}/preprocessor_config.json",
-                    f"{model}/preprocessor_config.json",
-                )
-
-
 # Modal
-IMAGE = GPU_IMAGE.run_function(
-    download_models,
-    secrets=SECRETS,
-    volumes=VOLUME_CONFIG,
-)
+
 TIMEOUT = 24 * 60 * MINUTES
 
 if modal.is_local():
@@ -354,7 +315,7 @@ def summarize(lbl_pt_metrics):
 
 
 @app.function(
-    image=IMAGE,
+    image=GPU_IMAGE,
     gpu=GPU_CONFIG,
     volumes=VOLUME_CONFIG,
     secrets=SECRETS,
@@ -445,18 +406,18 @@ def main(base: bool, sft: bool, dpo: bool, quant: bool):
         ## run
         img_batches = list(chunked(img_paths, MAX_NUM_SEQS))
         model = (
-            BASE_MODEL
+            BASE_HF_MODEL
             if base and not quant
-            # else SFT_MODEL
-            # if sft and not quant
-            # else DPO_MODEL
-            # if dpo and not quant
-            # else BASE_QUANT_MODEL
-            # if base and quant
-            # else SFT_QUANT_MODEL
-            # if sft and quant
-            # else DPO_QUANT_MODEL
-            # if dpo and quant
+            else SFT_HF_MODEL
+            if sft and not quant
+            else DPO_HF_MODEL
+            if dpo and not quant
+            else BASE_QUANT_MODEL
+            if base and quant
+            else SFT_QUANT_MODEL
+            if sft and quant
+            else DPO_QUANT_MODEL
+            if dpo and quant
             else None
         )
         if modal.is_local():
@@ -492,7 +453,7 @@ def main(base: bool, sft: bool, dpo: bool, quant: bool):
 
 
 @app.function(
-    image=IMAGE,
+    image=GPU_IMAGE,
     gpu=GPU_CONFIG,
     volumes=VOLUME_CONFIG,
     secrets=SECRETS,

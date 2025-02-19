@@ -5,6 +5,8 @@ description = "MHF Automated Labelling"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "accelerate>=1.4.0",
+    "datasets>=3.3.1",
     "flash-attn>=2.7.4.post1",
     "gimpformats>=2024",
     "hf-transfer>=0.1.9",

@@ -1,12 +1,26 @@
+import os
 import random
 import subprocess
 from pathlib import Path, PurePosixPath
 
 import modal
+from huggingface_hub import HfApi
 
 random.seed(42)
 
 APP_NAME = "mhf"
+HF_USERNAME = HfApi().whoami(token=os.getenv("HF_TOKEN"))["name"]
+
+PROCESSOR = "Qwen/Qwen2.5-VL-3B-Instruct"
+BASE_HF_MODEL = "Qwen/Qwen2.5-VL-3B-Instruct"  # pretrained model or ckpt
+BASE_QUANT_MODEL = f"{HF_USERNAME}/{APP_NAME}-{BASE_HF_MODEL.split('/')[1]}-AWQ"
+SFT_MODEL = "qwen2.5-vl-3b-instruct-lora-sft-merged"
+SFT_HF_MODEL = f"{HF_USERNAME}/{APP_NAME}-{SFT_MODEL}"  # pretrained model or ckpt
+SFT_QUANT_MODEL = f"{HF_USERNAME}/{APP_NAME}-{SFT_MODEL}-awq"
+DPO_MODEL = "qwen2.5-vl-3b-instruct-lora-dpo-merged"
+DPO_HF_MODEL = f"{HF_USERNAME}/{APP_NAME}-{DPO_MODEL}"
+DPO_QUANT_MODEL = f"{HF_USERNAME}/{APP_NAME}-{DPO_MODEL}-awq"
+
 SPLITS = ["train", "valid", "test"]
 PARENT_PATH = Path(__file__).parent.parent
 ARTIFACTS_PATH = PARENT_PATH / "artifacts"
@@ -66,6 +80,8 @@ GPU_IMAGE = (
     )
     .apt_install("git", "ffmpeg", "libsm6", "libxext6")  # add system dependencies
     .pip_install(  # add Python dependencies
+        "accelerate>=1.4.0",
+        "datasets>=3.3.1",
         "gimpformats>=2024",
         "hf-transfer>=0.1.9",
         "huggingface-hub>=0.28.1",
@@ -83,8 +99,11 @@ GPU_IMAGE = (
         "vllm>=0.7.2",
         "wheel>=0.45.1",  # required to build flash-attn
     )
+    .run_commands(
+        "pip install git+https://github.com/seungwoos/AutoAWQ.git@add-qwen2_5_vl --no-deps"
+    )
     .run_commands(  # add flash-attn
-        "pip install flash-attn==2.7.2.post1 --no-build-isolation"
+        "pip install flash-attn==2.7.4.post1 --no-build-isolation"
     )
     .env(
         {
