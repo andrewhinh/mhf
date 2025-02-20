@@ -6,6 +6,17 @@ import os
 import random
 
 import modal
+import torch
+import torch.nn as nn
+from awq import AutoAWQForCausalLM
+from awq.quantize.quantizer import AwqQuantizer, clear_memory, get_best_device
+from awq.utils.qwen_vl_utils import process_vision_info
+from tqdm import tqdm
+from tqdm.contrib.concurrent import thread_map
+from transformers import (
+    AutoProcessor,
+    Qwen2_5_VLForConditionalGeneration,
+)
 
 from utils import (
     APP_NAME,
@@ -13,7 +24,7 @@ from utils import (
     BASE_QUANT_MODEL,
     DATA_VOL_PATH,
     DPO_HF_MODEL,
-    DPO_MODEL,
+    DPO_MERGED,
     DPO_QUANT_MODEL,
     GPU_IMAGE,
     MINUTES,
@@ -63,7 +74,7 @@ DPO_QUANT_CONFIG = {
     "w_bit": 4,
     "version": "GEMM",
 }
-DPO_SAVE_PATH = f"{RUNS_VOL_PATH}/{DPO_MODEL}-awq"
+DPO_SAVE_PATH = f"{RUNS_VOL_PATH}/{DPO_MERGED}-awq"
 
 # -----------------------------------------------------------------------------
 
@@ -76,19 +87,6 @@ GPU_CONFIG = f"{GPU_TYPE}:{GPU_COUNT}"
 app = modal.App(name=f"{APP_NAME}-quantize")
 
 # -----------------------------------------------------------------------------
-
-with GPU_IMAGE.imports():
-    import torch
-    import torch.nn as nn
-    from awq import AutoAWQForCausalLM
-    from awq.quantize.quantizer import AwqQuantizer, clear_memory, get_best_device
-    from awq.utils.qwen_vl_utils import process_vision_info
-    from tqdm import tqdm
-    from tqdm.contrib.concurrent import thread_map
-    from transformers import (
-        AutoProcessor,
-        Qwen2_5_VLForConditionalGeneration,
-    )
 
 
 def cal_data(sample: dict) -> list[dict]:
@@ -265,7 +263,6 @@ def main(base: bool, sft: bool, dpo: bool):
         )
     if dpo:
         helper(
-            DPO_MODEL,
             DPO_HF_MODEL,
             DPO_QUANT_CONFIG,
             DPO_SAVE_PATH,

@@ -661,13 +661,7 @@ or
 modal run src/eval.py --base --quant
 ```
 
-Run SFT:
-
-```bash
-cd LLaMA-Factory && uv pip install -e ".[torch,metrics]" && cd .. && FORCE_TORCHRUN=1 uv run src/train.py --sft
-```
-
-or
+Run SFT ([e.g. run on wandb](https://wandb.ai/andrewhinh/mhf/runs/5v83pidh)):
 
 ```bash
 modal run src/train.py --sft
@@ -722,12 +716,6 @@ modal run src/etl.py --dpo
 ```
 
 Run DPO:
-
-```bash
-cd LLaMA-Factory && uv pip install -e ".[torch,metrics]" && cd .. && FORCE_TORCHRUN=1 uv run src/train.py --dpo
-```
-
-or
 
 ```bash
 modal run src/train.py --dpo

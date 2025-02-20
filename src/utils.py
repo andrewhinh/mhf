@@ -14,16 +14,18 @@ HF_USERNAME = HfApi().whoami(token=os.getenv("HF_TOKEN"))["name"]
 PROCESSOR = "Qwen/Qwen2.5-VL-3B-Instruct"
 BASE_HF_MODEL = "Qwen/Qwen2.5-VL-3B-Instruct"  # pretrained model or ckpt
 BASE_QUANT_MODEL = f"{HF_USERNAME}/{APP_NAME}-{BASE_HF_MODEL.split('/')[1]}-AWQ"
-SFT_MODEL = "qwen2.5-vl-3b-instruct-lora-sft-merged"
+SFT_MODEL = "qwen2.5-vl-3b-instruct-full-sft"
 SFT_HF_MODEL = f"{HF_USERNAME}/{APP_NAME}-{SFT_MODEL}"  # pretrained model or ckpt
-SFT_QUANT_MODEL = f"{HF_USERNAME}/{APP_NAME}-{SFT_MODEL}-awq"
-DPO_MODEL = "qwen2.5-vl-3b-instruct-lora-dpo-merged"
-DPO_HF_MODEL = f"{HF_USERNAME}/{APP_NAME}-{DPO_MODEL}"
-DPO_QUANT_MODEL = f"{HF_USERNAME}/{APP_NAME}-{DPO_MODEL}-awq"
+SFT_QUANT_MODEL = f"{SFT_HF_MODEL}-awq"
+DPO_MODEL = "qwen2.5-vl-3b-instruct-lora-dpo"
+DPO_MERGED = f"{DPO_MODEL}-merged"
+DPO_HF_MODEL = f"{HF_USERNAME}/{APP_NAME}-{DPO_MERGED}"  # pretrained model or ckpt
+DPO_QUANT_MODEL = f"{DPO_HF_MODEL}-awq"
 
 SPLITS = ["train", "valid", "test"]
 PARENT_PATH = Path(__file__).parent.parent
 ARTIFACTS_PATH = PARENT_PATH / "artifacts"
+SRC_PATH = PARENT_PATH / "src"
 
 DEFAULT_IMG_PATH = ARTIFACTS_PATH / "data" / "0.png"
 DEFAULT_IMG_URL = "https://ndownloader.figshare.com/files/46283905"
@@ -80,8 +82,9 @@ GPU_IMAGE = (
     )
     .apt_install("git", "ffmpeg", "libsm6", "libxext6")  # add system dependencies
     .pip_install(  # add Python dependencies
-        "accelerate>=1.4.0",
-        "datasets>=3.3.1",
+        "accelerate>=0.34.0,<=1.2.1",
+        "datasets>=2.16.0,<=3.2.0",
+        "deepspeed>=0.16.3",
         "gimpformats>=2024",
         "hf-transfer>=0.1.9",
         "huggingface-hub>=0.28.1",
@@ -97,6 +100,7 @@ GPU_IMAGE = (
         "tqdm>=4.67.1",
         "transformers @ git+https://github.com/huggingface/transformers.git@9985d06add07a4cc691dc54a7e34f54205c04d40",
         "vllm>=0.7.2",
+        "wandb>=0.19.6",
         "wheel>=0.45.1",  # required to build flash-attn
     )
     .run_commands(
