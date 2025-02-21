@@ -1,3 +1,4 @@
+import os
 import random
 import subprocess
 from pathlib import Path, PurePosixPath
@@ -5,29 +6,11 @@ from pathlib import Path, PurePosixPath
 import modal
 
 random.seed(42)
-
 APP_NAME = "mhf"
-SPLITS = ["train", "valid", "test"]
+
 PARENT_PATH = Path(__file__).parent.parent
 ARTIFACTS_PATH = PARENT_PATH / "artifacts"
-
-DEFAULT_IMG_PATH = ARTIFACTS_PATH / "data" / "0.png"
-DEFAULT_IMG_URL = "https://ndownloader.figshare.com/files/46283905"
-DEFAULT_SYSTEM_PROMPT = "You are a helpful assistant."
-DEFAULT_USER_PROMPT = """
-Detect all substructures in the 2D ultrasound and return their locations in the form of xy-point-based outlines.
-Here are the possible substructures and number of points that may be predicted for each substructure.
-- calota, min=4, max=6
-- cavum, min=4, max=5
-- silvio, min=3, max=3
-- astes anteriors, min=0, max=2
-- talems, min=3, max=4
-- linia mitja, min=2, max=2
-- cerebel, min=6, max=8
-Notes:
-- the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.
-- all substructures are present in the ultrasound.
-"""
+SRC_PATH = PARENT_PATH / "src"
 
 # Modal
 SECRETS = [modal.Secret.from_dotenv(path=PARENT_PATH, filename=".env")]
@@ -66,6 +49,9 @@ GPU_IMAGE = (
     )
     .apt_install("git", "ffmpeg", "libsm6", "libxext6")  # add system dependencies
     .pip_install(  # add Python dependencies
+        "accelerate>=0.34.0,<=1.2.1",
+        "datasets>=2.16.0,<=3.2.0",
+        "deepspeed>=0.16.3",
         "gimpformats>=2024",
         "hf-transfer>=0.1.9",
         "huggingface-hub>=0.28.1",
@@ -81,10 +67,14 @@ GPU_IMAGE = (
         "tqdm>=4.67.1",
         "transformers @ git+https://github.com/huggingface/transformers.git@9985d06add07a4cc691dc54a7e34f54205c04d40",
         "vllm>=0.7.2",
+        "wandb>=0.19.6",
         "wheel>=0.45.1",  # required to build flash-attn
     )
+    .run_commands(
+        "pip install git+https://github.com/seungwoos/AutoAWQ.git@add-qwen2_5_vl --no-deps"
+    )
     .run_commands(  # add flash-attn
-        "pip install flash-attn==2.7.2.post1 --no-build-isolation"
+        "pip install flash-attn==2.7.4.post1 --no-build-isolation"
     )
     .env(
         {
@@ -111,3 +101,42 @@ def _exec_subprocess(cmd: list[str]):
 
     if exitcode := process.wait() != 0:
         raise subprocess.CalledProcessError(exitcode, "\n".join(cmd))
+
+
+with GPU_IMAGE.imports():
+    from huggingface_hub import HfApi
+
+
+HF_USERNAME = HfApi().whoami(token=os.getenv("HF_TOKEN"))["name"]
+
+PROCESSOR = "Qwen/Qwen2.5-VL-3B-Instruct"
+BASE_HF_MODEL = "Qwen/Qwen2.5-VL-3B-Instruct"  # pretrained model or ckpt
+BASE_QUANT_MODEL = f"{HF_USERNAME}/{APP_NAME}-{BASE_HF_MODEL.split('/')[1]}-AWQ"
+SFT_MODEL = "qwen2.5-vl-3b-instruct-full-sft"
+SFT_HF_MODEL = f"{HF_USERNAME}/{APP_NAME}-{SFT_MODEL}"  # pretrained model or ckpt
+SFT_QUANT_MODEL = f"{SFT_HF_MODEL}-awq"
+DPO_MODEL = "qwen2.5-vl-3b-instruct-lora-dpo"
+DPO_MERGED = f"{DPO_MODEL}-merged"
+DPO_HF_MODEL = f"{HF_USERNAME}/{APP_NAME}-{DPO_MERGED}"  # pretrained model or ckpt
+DPO_QUANT_MODEL = f"{DPO_HF_MODEL}-awq"
+
+SPLITS = ["train", "valid", "test"]
+
+
+DEFAULT_IMG_PATH = ARTIFACTS_PATH / "data" / "0.png"
+DEFAULT_IMG_URL = "https://ndownloader.figshare.com/files/46283905"
+DEFAULT_SYSTEM_PROMPT = "You are a helpful assistant."
+DEFAULT_USER_PROMPT = """
+Detect all substructures in the 2D ultrasound and return their locations in the form of xy-point-based outlines.
+Here are the possible substructures and number of points that may be predicted for each substructure.
+- calota, min=4, max=6
+- cavum, min=4, max=5
+- silvio, min=3, max=3
+- astes anteriors, min=0, max=2
+- talems, min=3, max=4
+- linia mitja, min=2, max=2
+- cerebel, min=6, max=8
+Notes:
+- the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.
+- all substructures are present in the ultrasound.
+"""
