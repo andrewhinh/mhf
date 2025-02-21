@@ -5,9 +5,6 @@ import os
 from pathlib import Path
 
 import modal
-import torch
-import yaml
-from transformers import AutoProcessor, Qwen2_5_VLForConditionalGeneration
 
 from utils import (
     APP_NAME,
@@ -134,19 +131,20 @@ sft_config = {
     "overwrite_output_dir": True,
     "include_effective_tokens_per_second": True,
     ### train
-    "per_device_train_batch_size": 1,
-    "gradient_accumulation_steps": 2,
-    "learning_rate": 1.0e-5,
-    "num_train_epochs": 60.0,
+    "per_device_train_batch_size": 4,
+    "gradient_accumulation_steps": 1,
+    "learning_rate": 1.0e-6,
+    "max_steps": 100,
     "lr_scheduler_type": "cosine",
     "warmup_ratio": 0.1,
     "bf16": True,
     "ddp_timeout": 180000000,
+    "weight_decay": 3e2,
     ### eval
     "val_size": 0.1,
-    "per_device_eval_batch_size": 1,
+    "per_device_eval_batch_size": 4,
     "eval_strategy": "steps",
-    "eval_steps": 500,
+    "eval_steps": 10,
     "report_to": "wandb",
     "run_name": SFT_MODEL,
 }
@@ -199,7 +197,7 @@ dpo_train_config = {
     "val_size": 0.1,
     "per_device_eval_batch_size": 1,
     "eval_strategy": "steps",
-    "eval_steps": 500,
+    "eval_steps": 10,
     "report_to": "wandb",
     "run_name": DPO_MODEL,
 }
@@ -221,6 +219,11 @@ dpo_merge_config = {
 # -----------------------------------------------------------------------------
 
 # helpers
+
+with GPU_IMAGE.imports():
+    import torch
+    import yaml
+    from transformers import AutoProcessor, Qwen2_5_VLForConditionalGeneration
 
 
 def push_to_hub(local_dir: str, model_path: str):

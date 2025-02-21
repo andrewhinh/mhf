@@ -3,19 +3,6 @@ import json
 from itertools import chain
 from pathlib import Path
 
-import modal
-import numpy as np
-import torch
-import yaml
-from more_itertools import chunked
-from pydantic import BaseModel
-from scipy.optimize import linear_sum_assignment
-from scipy.spatial.distance import directed_hausdorff
-from sklearn.metrics import auc, precision_recall_curve, roc_auc_score
-from tqdm import tqdm
-from vllm import LLM, SamplingParams
-from vllm.sampling_params import GuidedDecodingParams
-
 from utils import (
     APP_NAME,
     BASE_HF_MODEL,
@@ -34,13 +21,27 @@ from utils import (
     VOLUME_CONFIG,
 )
 
+with GPU_IMAGE.imports():
+    import modal
+    import numpy as np
+    import torch
+    import yaml
+    from more_itertools import chunked
+    from pydantic import BaseModel
+    from scipy.optimize import linear_sum_assignment
+    from scipy.spatial.distance import directed_hausdorff
+    from sklearn.metrics import auc, precision_recall_curve, roc_auc_score
+    from tqdm import tqdm
+    from vllm import LLM, SamplingParams
+    from vllm.sampling_params import GuidedDecodingParams
+
 # -----------------------------------------------------------------------------
 
 # vlm config
 
 KV_CACHE_DTYPE = None  # "fp8_e5m2"
 ENFORCE_EAGER = False
-MAX_NUM_SEQS = 32 if modal.is_local() else 128
+MAX_NUM_SEQS = 16 if modal.is_local() else 64
 MIN_PIXELS = 28 * 28
 MAX_PIXELS = 1280 * 28 * 28
 TEMPERATURE = 0.1
@@ -81,8 +82,7 @@ if modal.is_local():
 else:
     GPU_COUNT = 1
 
-GPU_TYPE = "l40s"
-GPU_SIZE = None  # options = None, "40GB", "80GB"
+GPU_TYPE = "l4"
 GPU_CONFIG = f"{GPU_TYPE}:{GPU_COUNT}"
 
 app = modal.App(name=f"{APP_NAME}-eval")
@@ -454,7 +454,6 @@ def main(base: bool, sft: bool, dpo: bool, quant: bool):
 
 @app.function(
     image=GPU_IMAGE,
-    gpu=GPU_CONFIG,
     volumes=VOLUME_CONFIG,
     secrets=SECRETS,
     timeout=TIMEOUT,

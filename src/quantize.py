@@ -6,17 +6,6 @@ import os
 import random
 
 import modal
-import torch
-import torch.nn as nn
-from awq import AutoAWQForCausalLM
-from awq.quantize.quantizer import AwqQuantizer, clear_memory, get_best_device
-from awq.utils.qwen_vl_utils import process_vision_info
-from tqdm import tqdm
-from tqdm.contrib.concurrent import thread_map
-from transformers import (
-    AutoProcessor,
-    Qwen2_5_VLForConditionalGeneration,
-)
 
 from utils import (
     APP_NAME,
@@ -80,8 +69,25 @@ DPO_SAVE_PATH = f"{RUNS_VOL_PATH}/{DPO_MERGED}-awq"
 
 TIMEOUT = 24 * 60 * MINUTES
 
-GPU_TYPE = "l40s"
-GPU_COUNT = 1
+with GPU_IMAGE.imports():
+    import torch
+    import torch.nn as nn
+    from awq import AutoAWQForCausalLM
+    from awq.quantize.quantizer import AwqQuantizer, clear_memory, get_best_device
+    from awq.utils.qwen_vl_utils import process_vision_info
+    from tqdm import tqdm
+    from tqdm.contrib.concurrent import thread_map
+    from transformers import (
+        AutoProcessor,
+        Qwen2_5_VLForConditionalGeneration,
+    )
+
+if modal.is_local():
+    GPU_COUNT = torch.cuda.device_count()
+else:
+    GPU_COUNT = 1
+
+GPU_TYPE = "l4"
 GPU_CONFIG = f"{GPU_TYPE}:{GPU_COUNT}"
 
 app = modal.App(name=f"{APP_NAME}-quantize")

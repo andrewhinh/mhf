@@ -4,46 +4,13 @@ import subprocess
 from pathlib import Path, PurePosixPath
 
 import modal
-from huggingface_hub import HfApi
 
 random.seed(42)
-
 APP_NAME = "mhf"
-HF_USERNAME = HfApi().whoami(token=os.getenv("HF_TOKEN"))["name"]
 
-PROCESSOR = "Qwen/Qwen2.5-VL-3B-Instruct"
-BASE_HF_MODEL = "Qwen/Qwen2.5-VL-3B-Instruct"  # pretrained model or ckpt
-BASE_QUANT_MODEL = f"{HF_USERNAME}/{APP_NAME}-{BASE_HF_MODEL.split('/')[1]}-AWQ"
-SFT_MODEL = "qwen2.5-vl-3b-instruct-full-sft"
-SFT_HF_MODEL = f"{HF_USERNAME}/{APP_NAME}-{SFT_MODEL}"  # pretrained model or ckpt
-SFT_QUANT_MODEL = f"{SFT_HF_MODEL}-awq"
-DPO_MODEL = "qwen2.5-vl-3b-instruct-lora-dpo"
-DPO_MERGED = f"{DPO_MODEL}-merged"
-DPO_HF_MODEL = f"{HF_USERNAME}/{APP_NAME}-{DPO_MERGED}"  # pretrained model or ckpt
-DPO_QUANT_MODEL = f"{DPO_HF_MODEL}-awq"
-
-SPLITS = ["train", "valid", "test"]
 PARENT_PATH = Path(__file__).parent.parent
 ARTIFACTS_PATH = PARENT_PATH / "artifacts"
 SRC_PATH = PARENT_PATH / "src"
-
-DEFAULT_IMG_PATH = ARTIFACTS_PATH / "data" / "0.png"
-DEFAULT_IMG_URL = "https://ndownloader.figshare.com/files/46283905"
-DEFAULT_SYSTEM_PROMPT = "You are a helpful assistant."
-DEFAULT_USER_PROMPT = """
-Detect all substructures in the 2D ultrasound and return their locations in the form of xy-point-based outlines.
-Here are the possible substructures and number of points that may be predicted for each substructure.
-- calota, min=4, max=6
-- cavum, min=4, max=5
-- silvio, min=3, max=3
-- astes anteriors, min=0, max=2
-- talems, min=3, max=4
-- linia mitja, min=2, max=2
-- cerebel, min=6, max=8
-Notes:
-- the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.
-- all substructures are present in the ultrasound.
-"""
 
 # Modal
 SECRETS = [modal.Secret.from_dotenv(path=PARENT_PATH, filename=".env")]
@@ -134,3 +101,42 @@ def _exec_subprocess(cmd: list[str]):
 
     if exitcode := process.wait() != 0:
         raise subprocess.CalledProcessError(exitcode, "\n".join(cmd))
+
+
+with GPU_IMAGE.imports():
+    from huggingface_hub import HfApi
+
+
+HF_USERNAME = HfApi().whoami(token=os.getenv("HF_TOKEN"))["name"]
+
+PROCESSOR = "Qwen/Qwen2.5-VL-3B-Instruct"
+BASE_HF_MODEL = "Qwen/Qwen2.5-VL-3B-Instruct"  # pretrained model or ckpt
+BASE_QUANT_MODEL = f"{HF_USERNAME}/{APP_NAME}-{BASE_HF_MODEL.split('/')[1]}-AWQ"
+SFT_MODEL = "qwen2.5-vl-3b-instruct-full-sft"
+SFT_HF_MODEL = f"{HF_USERNAME}/{APP_NAME}-{SFT_MODEL}"  # pretrained model or ckpt
+SFT_QUANT_MODEL = f"{SFT_HF_MODEL}-awq"
+DPO_MODEL = "qwen2.5-vl-3b-instruct-lora-dpo"
+DPO_MERGED = f"{DPO_MODEL}-merged"
+DPO_HF_MODEL = f"{HF_USERNAME}/{APP_NAME}-{DPO_MERGED}"  # pretrained model or ckpt
+DPO_QUANT_MODEL = f"{DPO_HF_MODEL}-awq"
+
+SPLITS = ["train", "valid", "test"]
+
+
+DEFAULT_IMG_PATH = ARTIFACTS_PATH / "data" / "0.png"
+DEFAULT_IMG_URL = "https://ndownloader.figshare.com/files/46283905"
+DEFAULT_SYSTEM_PROMPT = "You are a helpful assistant."
+DEFAULT_USER_PROMPT = """
+Detect all substructures in the 2D ultrasound and return their locations in the form of xy-point-based outlines.
+Here are the possible substructures and number of points that may be predicted for each substructure.
+- calota, min=4, max=6
+- cavum, min=4, max=5
+- silvio, min=3, max=3
+- astes anteriors, min=0, max=2
+- talems, min=3, max=4
+- linia mitja, min=2, max=2
+- cerebel, min=6, max=8
+Notes:
+- the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.
+- all substructures are present in the ultrasound.
+"""
