@@ -4,151 +4,7 @@ MHF Automated Labelling
 
 ## results
 
-Baseline prompt with EDA info (7B):
-
-```bash
-"train": {
-  'label_metrics': {'precision': 1.0, 'recall': 1.0, 'f1': 1.0},
-  'point_metrics': {
-    'astes anteriors': {
-      'hausdorff_distance': 16071.07, 'euclidean_distance': 26622.66,
-      'tp': 6, 'fp': 214, 'fn': 158,
-      'precision': 0.027, 'recall': 0.037, 'f1': 0.031,
-      'auc_roc': 1.0, 'auc_pr': 1.0
-    },
-    'cavum': {
-      'hausdorff_distance': 13117.6, 'euclidean_distance': 41645.36,
-      'tp': 10, 'fp': 336, 'fn': 323,
-      'precision': 0.029, 'recall': 0.03, 'f1': 0.029,
-      'auc_roc': 1.0, 'auc_pr': 1.0
-    },
-    'calota': {
-      'hausdorff_distance': 25103.81, 'euclidean_distance': 66878.54,
-      'tp': 13, 'fp': 319, 'fn': 320,
-      'precision': 0.039, 'recall': 0.039, 'f1': 0.039,
-      'auc_roc': 1.0, 'auc_pr': 1.0
-    },
-    'talems': {
-      'hausdorff_distance': 11874.31, 'euclidean_distance': 28102.76,
-      'tp': 17, 'fp': 275, 'fn': 237,
-      'precision': 0.058, 'recall': 0.067, 'f1': 0.062,
-      'auc_roc': 1.0, 'auc_pr': 1.0
-    },
-    'silvio': {
-      'hausdorff_distance': 17494.8, 'euclidean_distance': 49032.12,
-      'tp': 0, 'fp': 250, 'fn': 249,
-      'precision': 0.0, 'recall': 0.0, 'f1': 0.0,
-      'auc_roc': 0.0, 'auc_pr': 0.0
-    },
-    'linia mitja': {
-      'hausdorff_distance': 17016.54, 'euclidean_distance': 32535.82,
-      'tp': 1, 'fp': 165, 'fn': 165,
-      'precision': 0.006, 'recall': 0.006, 'f1': 0.006,
-      'auc_roc': 1.0, 'auc_pr': 1.0
-    },
-    'cerebel': {
-      'hausdorff_distance': 19344.85, 'euclidean_distance': 83555.97,
-      'tp': 34, 'fp': 478, 'fn': 627,
-      'precision': 0.066, 'recall': 0.051, 'f1': 0.058,
-      'auc_roc': 1.0, 'auc_pr': 1.0
-    }
-  }
-}
-"val": {
-  'label_metrics': {'precision': 1.0, 'recall': 0.99, 'f1': 0.99},
-  'point_metrics': {
-    'astes anteriors': {
-      'hausdorff_distance': 2336.19, 'euclidean_distance': 3529.08,
-      'tp': 0, 'fp': 31, 'fn': 20,
-      'precision': 0.0, 'recall': 0.0, 'f1': 0.0,
-      'auc_roc': 0.0, 'auc_pr': 0.0
-    },
-    'cavum': {
-      'hausdorff_distance': 1646.56, 'euclidean_distance': 4821.2,
-      'tp': 0, 'fp': 45, 'fn': 40,
-      'precision': 0.0, 'recall': 0.0, 'f1': 0.0,
-      'auc_roc': 0.0, 'auc_pr': 0.0
-    },
-    'calota': {
-      'hausdorff_distance': 2722.35, 'euclidean_distance': 7275.52,
-      'tp': 0, 'fp': 40, 'fn': 40,
-      'precision': 0.0, 'recall': 0.0, 'f1': 0.0,
-      'auc_roc': 0.0, 'auc_pr': 0.0
-    },
-    'talems': {
-      'hausdorff_distance': 1887.86, 'euclidean_distance': 4361.25,
-      'tp': 2, 'fp': 36, 'fn': 30,
-      'precision': 0.053, 'recall': 0.062, 'f1': 0.057,
-      'auc_roc': 1.0, 'auc_pr': 1.0
-    },
-    'silvio': {
-      'hausdorff_distance': 2262.52, 'euclidean_distance': 6152.66,
-      'tp': 0, 'fp': 31, 'fn': 30,
-      'precision': 0.0, 'recall': 0.0, 'f1': 0.0,
-      'auc_roc': 0.0, 'auc_pr': 0.0
-    },
-    'linia mitja': {
-      'hausdorff_distance': 2527.07, 'euclidean_distance': 4688.1,
-      'tp': 0, 'fp': 22, 'fn': 20,
-      'precision': 0.0, 'recall': 0.0, 'f1': 0.0,
-      'auc_roc': 0.0, 'auc_pr': 0.0
-    },
-    'cerebel': {
-      'hausdorff_distance': 2838.5, 'euclidean_distance': 11192.18,
-      'tp': 1, 'fp': 84, 'fn': 79,
-      'precision': 0.012, 'recall': 0.013, 'f1': 0.012,
-      'auc_roc': 1.0, 'auc_pr': 1.0
-    }
-  }
-}
-"test": {
-  'label_metrics': {'precision': 1.0, 'recall': 0.99, 'f1': 0.99},
-  'point_metrics': {
-    'astes anteriors': {
-      'hausdorff_distance': 2096.78, 'euclidean_distance': 3590.14,
-      'tp': 0, 'fp': 30, 'fn': 22,
-      'precision': 0.0, 'recall': 0.0, 'f1': 0.0,
-      'auc_roc': 0.0, 'auc_pr': 0.0
-    },
-    'cavum': {
-      'hausdorff_distance': 1929.17, 'euclidean_distance': 6501.95,
-      'tp': 0, 'fp': 45, 'fn': 44,
-      'precision': 0.0, 'recall': 0.0, 'f1': 0.0,
-      'auc_roc': 0.0, 'auc_pr': 0.0
-    },
-    'calota': {
-      'hausdorff_distance': 3341.31, 'euclidean_distance': 8846.23,
-      'tp': 1, 'fp': 43, 'fn': 45,
-      'precision': 0.023, 'recall': 0.022, 'f1': 0.022,
-      'auc_roc': 1.0, 'auc_pr': 1.0
-    },
-    'talems': {
-      'hausdorff_distance': 1996.23, 'euclidean_distance': 4963.39,
-      'tp': 3, 'fp': 35, 'fn': 30,
-      'precision': 0.079, 'recall': 0.091, 'f1': 0.085,
-      'auc_roc': 1.0, 'auc_pr': 1.0
-    },
-    'silvio': {
-      'hausdorff_distance': 2396.6, 'euclidean_distance': 6781.42,
-      'tp': 1, 'fp': 32, 'fn': 32,
-      'precision': 0.03, 'recall': 0.03, 'f1': 0.03,
-      'auc_roc': 1.0, 'auc_pr': 1.0
-    },
-    'linia mitja': {
-      'hausdorff_distance': 2625.77, 'euclidean_distance': 5004.67,
-      'tp': 0, 'fp': 23, 'fn': 22,
-      'precision': 0.0, 'recall': 0.0, 'f1': 0.0,
-      'auc_roc': 0.0, 'auc_pr': 0.0
-    },
-    'cerebel': {
-      'hausdorff_distance': 3202.71, 'euclidean_distance': 15544.2,
-      'tp': 0, 'fp': 66, 'fn': 88,
-      'precision': 0.0, 'recall': 0.0, 'f1': 0.0,
-      'auc_roc': 0.0, 'auc_pr': 0.0
-    }
-  }
-}
-```
+### All substructures
 
 Baseline prompt with EDA info:
 
@@ -429,6 +285,152 @@ Baseline prompt with EDA info:
       "f1": 0.0,
       "auc_roc": 0.0,
       "auc_pr": 0.0
+    }
+  }
+}
+```
+
+Baseline prompt with EDA info (7B):
+
+```bash
+"train": {
+  'label_metrics': {'precision': 1.0, 'recall': 1.0, 'f1': 1.0},
+  'point_metrics': {
+    'astes anteriors': {
+      'hausdorff_distance': 16071.07, 'euclidean_distance': 26622.66,
+      'tp': 6, 'fp': 214, 'fn': 158,
+      'precision': 0.027, 'recall': 0.037, 'f1': 0.031,
+      'auc_roc': 1.0, 'auc_pr': 1.0
+    },
+    'cavum': {
+      'hausdorff_distance': 13117.6, 'euclidean_distance': 41645.36,
+      'tp': 10, 'fp': 336, 'fn': 323,
+      'precision': 0.029, 'recall': 0.03, 'f1': 0.029,
+      'auc_roc': 1.0, 'auc_pr': 1.0
+    },
+    'calota': {
+      'hausdorff_distance': 25103.81, 'euclidean_distance': 66878.54,
+      'tp': 13, 'fp': 319, 'fn': 320,
+      'precision': 0.039, 'recall': 0.039, 'f1': 0.039,
+      'auc_roc': 1.0, 'auc_pr': 1.0
+    },
+    'talems': {
+      'hausdorff_distance': 11874.31, 'euclidean_distance': 28102.76,
+      'tp': 17, 'fp': 275, 'fn': 237,
+      'precision': 0.058, 'recall': 0.067, 'f1': 0.062,
+      'auc_roc': 1.0, 'auc_pr': 1.0
+    },
+    'silvio': {
+      'hausdorff_distance': 17494.8, 'euclidean_distance': 49032.12,
+      'tp': 0, 'fp': 250, 'fn': 249,
+      'precision': 0.0, 'recall': 0.0, 'f1': 0.0,
+      'auc_roc': 0.0, 'auc_pr': 0.0
+    },
+    'linia mitja': {
+      'hausdorff_distance': 17016.54, 'euclidean_distance': 32535.82,
+      'tp': 1, 'fp': 165, 'fn': 165,
+      'precision': 0.006, 'recall': 0.006, 'f1': 0.006,
+      'auc_roc': 1.0, 'auc_pr': 1.0
+    },
+    'cerebel': {
+      'hausdorff_distance': 19344.85, 'euclidean_distance': 83555.97,
+      'tp': 34, 'fp': 478, 'fn': 627,
+      'precision': 0.066, 'recall': 0.051, 'f1': 0.058,
+      'auc_roc': 1.0, 'auc_pr': 1.0
+    }
+  }
+}
+"val": {
+  'label_metrics': {'precision': 1.0, 'recall': 0.99, 'f1': 0.99},
+  'point_metrics': {
+    'astes anteriors': {
+      'hausdorff_distance': 2336.19, 'euclidean_distance': 3529.08,
+      'tp': 0, 'fp': 31, 'fn': 20,
+      'precision': 0.0, 'recall': 0.0, 'f1': 0.0,
+      'auc_roc': 0.0, 'auc_pr': 0.0
+    },
+    'cavum': {
+      'hausdorff_distance': 1646.56, 'euclidean_distance': 4821.2,
+      'tp': 0, 'fp': 45, 'fn': 40,
+      'precision': 0.0, 'recall': 0.0, 'f1': 0.0,
+      'auc_roc': 0.0, 'auc_pr': 0.0
+    },
+    'calota': {
+      'hausdorff_distance': 2722.35, 'euclidean_distance': 7275.52,
+      'tp': 0, 'fp': 40, 'fn': 40,
+      'precision': 0.0, 'recall': 0.0, 'f1': 0.0,
+      'auc_roc': 0.0, 'auc_pr': 0.0
+    },
+    'talems': {
+      'hausdorff_distance': 1887.86, 'euclidean_distance': 4361.25,
+      'tp': 2, 'fp': 36, 'fn': 30,
+      'precision': 0.053, 'recall': 0.062, 'f1': 0.057,
+      'auc_roc': 1.0, 'auc_pr': 1.0
+    },
+    'silvio': {
+      'hausdorff_distance': 2262.52, 'euclidean_distance': 6152.66,
+      'tp': 0, 'fp': 31, 'fn': 30,
+      'precision': 0.0, 'recall': 0.0, 'f1': 0.0,
+      'auc_roc': 0.0, 'auc_pr': 0.0
+    },
+    'linia mitja': {
+      'hausdorff_distance': 2527.07, 'euclidean_distance': 4688.1,
+      'tp': 0, 'fp': 22, 'fn': 20,
+      'precision': 0.0, 'recall': 0.0, 'f1': 0.0,
+      'auc_roc': 0.0, 'auc_pr': 0.0
+    },
+    'cerebel': {
+      'hausdorff_distance': 2838.5, 'euclidean_distance': 11192.18,
+      'tp': 1, 'fp': 84, 'fn': 79,
+      'precision': 0.012, 'recall': 0.013, 'f1': 0.012,
+      'auc_roc': 1.0, 'auc_pr': 1.0
+    }
+  }
+}
+"test": {
+  'label_metrics': {'precision': 1.0, 'recall': 0.99, 'f1': 0.99},
+  'point_metrics': {
+    'astes anteriors': {
+      'hausdorff_distance': 2096.78, 'euclidean_distance': 3590.14,
+      'tp': 0, 'fp': 30, 'fn': 22,
+      'precision': 0.0, 'recall': 0.0, 'f1': 0.0,
+      'auc_roc': 0.0, 'auc_pr': 0.0
+    },
+    'cavum': {
+      'hausdorff_distance': 1929.17, 'euclidean_distance': 6501.95,
+      'tp': 0, 'fp': 45, 'fn': 44,
+      'precision': 0.0, 'recall': 0.0, 'f1': 0.0,
+      'auc_roc': 0.0, 'auc_pr': 0.0
+    },
+    'calota': {
+      'hausdorff_distance': 3341.31, 'euclidean_distance': 8846.23,
+      'tp': 1, 'fp': 43, 'fn': 45,
+      'precision': 0.023, 'recall': 0.022, 'f1': 0.022,
+      'auc_roc': 1.0, 'auc_pr': 1.0
+    },
+    'talems': {
+      'hausdorff_distance': 1996.23, 'euclidean_distance': 4963.39,
+      'tp': 3, 'fp': 35, 'fn': 30,
+      'precision': 0.079, 'recall': 0.091, 'f1': 0.085,
+      'auc_roc': 1.0, 'auc_pr': 1.0
+    },
+    'silvio': {
+      'hausdorff_distance': 2396.6, 'euclidean_distance': 6781.42,
+      'tp': 1, 'fp': 32, 'fn': 32,
+      'precision': 0.03, 'recall': 0.03, 'f1': 0.03,
+      'auc_roc': 1.0, 'auc_pr': 1.0
+    },
+    'linia mitja': {
+      'hausdorff_distance': 2625.77, 'euclidean_distance': 5004.67,
+      'tp': 0, 'fp': 23, 'fn': 22,
+      'precision': 0.0, 'recall': 0.0, 'f1': 0.0,
+      'auc_roc': 0.0, 'auc_pr': 0.0
+    },
+    'cerebel': {
+      'hausdorff_distance': 3202.71, 'euclidean_distance': 15544.2,
+      'tp': 0, 'fp': 66, 'fn': 88,
+      'precision': 0.0, 'recall': 0.0, 'f1': 0.0,
+      'auc_roc': 0.0, 'auc_pr': 0.0
     }
   }
 }
@@ -721,7 +723,7 @@ Baseline prompt with EDA info, quantized:
 SFT:
 
 - [Failed run](https://wandb.ai/andrewhinh/mhf/runs/5v83pidh?nw=nwuserandrewhinh)
-- [Successful run](https://wandb.ai/andrewhinh/mhf/runs/4wmqs9hc?nw=nwuserandrewhinh)
+- [Successful(?) run](https://wandb.ai/andrewhinh/mhf/runs/4wmqs9hc?nw=nwuserandrewhinh)
 
 Baseline prompt with EDA info, SFT:
 
@@ -1291,17 +1293,271 @@ Baseline prompt with EDA info, SFT + quantized:
 }
 ```
 
-Baseline prompt with EDA info, DPO:
+### Per-substructure
+
+Baseline prompt with EDA info:
 
 ```bash
+train:
+  label_metrics:
+    precision: 0.14
+    recall: 1.0
+    f1: 0.25
+  point_metrics:
+    calota:
+      hausdorff_distance: 19085.66
+      euclidean_distance: 50284.24
+      tp: 5
+      fp: 325
+      fn: 328
+      precision: 0.015
+      recall: 0.015
+      f1: 0.015
+      auc_roc: 1.0
+      auc_pr: 1.0
+    talems:
+      hausdorff_distance: 14020.37
+      euclidean_distance: 29034.9
+      tp: 14
+      fp: 231
+      fn: 240
+      precision: 0.057
+      recall: 0.055
+      f1: 0.056
+      auc_roc: 1.0
+      auc_pr: 1.0
+    cerebel:
+      hausdorff_distance: 14943.57
+      euclidean_distance: 62782.64
+      tp: 8
+      fp: 485
+      fn: 653
+      precision: 0.016
+      recall: 0.012
+      f1: 0.014
+      auc_roc: 1.0
+      auc_pr: 1.0
+    cavum:
+      hausdorff_distance: 13808.74
+      euclidean_distance: 39841.72
+      tp: 9
+      fp: 320
+      fn: 324
+      precision: 0.027
+      recall: 0.027
+      f1: 0.027
+      auc_roc: 1.0
+      auc_pr: 1.0
+    silvio:
+      hausdorff_distance: 12293.15
+      euclidean_distance: 14670.65
+      tp: 3
+      fp: 116
+      fn: 246
+      precision: 0.025
+      recall: 0.012
+      f1: 0.016
+      auc_roc: 1.0
+      auc_pr: 1.0
+    astes anteriors:
+      hausdorff_distance: 13644.83
+      euclidean_distance: 20839.5
+      tp: 0
+      fp: 142
+      fn: 164
+      precision: 0.0
+      recall: 0.0
+      f1: 0.0
+      auc_roc: 0.0
+      auc_pr: 0.0
+    linia mitja:
+      hausdorff_distance: 12980.76
+      euclidean_distance: 13981.56
+      tp: 1
+      fp: 113
+      fn: 165
+      precision: 0.009
+      recall: 0.006
+      f1: 0.007
+      auc_roc: 1.0
+      auc_pr: 1.0
 
+valid:
+  label_metrics:
+    precision: 0.14
+    recall: 1.0
+    f1: 0.25
+  point_metrics:
+    calota:
+      hausdorff_distance: 2290.72
+      euclidean_distance: 6356.82
+      tp: 0
+      fp: 40
+      fn: 40
+      precision: 0.0
+      recall: 0.0
+      f1: 0.0
+      auc_roc: 0.0
+      auc_pr: 0.0
+    talems:
+      hausdorff_distance: 1628.3
+      euclidean_distance: 3565.96
+      tp: 3
+      fp: 27
+      fn: 29
+      precision: 0.1
+      recall: 0.094
+      f1: 0.097
+      auc_roc: 1.0
+      auc_pr: 1.0
+    cerebel:
+      hausdorff_distance: 1925.53
+      euclidean_distance: 8099.18
+      tp: 0
+      fp: 60
+      fn: 80
+      precision: 0.0
+      recall: 0.0
+      f1: 0.0
+      auc_roc: 0.0
+      auc_pr: 0.0
+    cavum:
+      hausdorff_distance: 1554.05
+      euclidean_distance: 4709.51
+      tp: 2
+      fp: 37
+      fn: 38
+      precision: 0.051
+      recall: 0.05
+      f1: 0.051
+      auc_roc: 1.0
+      auc_pr: 1.0
+    silvio:
+      hausdorff_distance: 1473.76
+      euclidean_distance: 1910.49
+      tp: 0
+      fp: 15
+      fn: 30
+      precision: 0.0
+      recall: 0.0
+      f1: 0.0
+      auc_roc: 0.0
+      auc_pr: 0.0
+    astes anteriors:
+      hausdorff_distance: 1521.79
+      euclidean_distance: 2391.73
+      tp: 0
+      fp: 17
+      fn: 20
+      precision: 0.0
+      recall: 0.0
+      f1: 0.0
+      auc_roc: 0.0
+      auc_pr: 0.0
+    linia mitja:
+      hausdorff_distance: 1566.4
+      euclidean_distance: 1863.16
+      tp: 0
+      fp: 14
+      fn: 20
+      precision: 0.0
+      recall: 0.0
+      f1: 0.0
+      auc_roc: 0.0
+      auc_pr: 0.0
+
+test:
+  label_metrics:
+    precision: 0.14
+    recall: 1.0
+    f1: 0.25
+  point_metrics:
+    calota:
+      hausdorff_distance: 2804.17
+      euclidean_distance: 6890.46
+      tp: 0
+      fp: 43
+      fn: 46
+      precision: 0.0
+      recall: 0.0
+      f1: 0.0
+      auc_roc: 0.0
+      auc_pr: 0.0
+    talems:
+      hausdorff_distance: 1956.31
+      euclidean_distance: 4671.32
+      tp: 0
+      fp: 33
+      fn: 33
+      precision: 0.0
+      recall: 0.0
+      f1: 0.0
+      auc_roc: 0.0
+      auc_pr: 0.0
+    cerebel:
+      hausdorff_distance: 2080.79
+      euclidean_distance: 8519.39
+      tp: 3
+      fp: 59
+      fn: 85
+      precision: 0.048
+      recall: 0.034
+      f1: 0.04
+      auc_roc: 1.0
+      auc_pr: 1.0
+    cavum:
+      hausdorff_distance: 1964.23
+      euclidean_distance: 5789.37
+      tp: 0
+      fp: 44
+      fn: 44
+      precision: 0.0
+      recall: 0.0
+      f1: 0.0
+      auc_roc: 0.0
+      auc_pr: 0.0
+    silvio:
+      hausdorff_distance: 2248.34
+      euclidean_distance: 3192.05
+      tp: 0
+      fp: 18
+      fn: 33
+      precision: 0.0
+      recall: 0.0
+      f1: 0.0
+      auc_roc: 0.0
+      auc_pr: 0.0
+    astes anteriors:
+      hausdorff_distance: 1927.33
+      euclidean_distance: 2922.35
+      tp: 0
+      fp: 19
+      fn: 22
+      precision: 0.0
+      recall: 0.0
+      f1: 0.0
+      auc_roc: 0.0
+      auc_pr: 0.0
+    linia mitja:
+      hausdorff_distance: 1808.33
+      euclidean_distance: 1480.5
+      tp: 1
+      fp: 11
+      fn: 21
+      precision: 0.083
+      recall: 0.045
+      f1: 0.059
+      auc_roc: 1.0
+      auc_pr: 1.0
 ```
 
-Baseline prompt with EDA info, DPO + quantized:
+Baseline prompt with EDA info, quantized (not done for sake of time):
 
-```bash
+SFT:
 
-```
+Baseline prompt with EDA info, SFT:
+
+Baseline prompt with EDA info, SFT + quantized:
 
 ## setup
 
@@ -1324,7 +1580,6 @@ source ~/.bashrc
 Create a `.env`:
 
 ```bash
-HF_TOKEN=
 WANDB_API_KEY=
 WANDB_ENTITY=
 ```

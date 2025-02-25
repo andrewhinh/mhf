@@ -14,14 +14,18 @@ from utils import (
     DPO_QUANT_MODEL,
     GPU_IMAGE,
     MINUTES,
+    PRETRAINED_VOLUME,
     SECRETS,
     SFT_HF_MODEL,
     SFT_QUANT_MODEL,
     SPLITS,
+    SUBSTRUCTURE_INFO,
     VOLUME_CONFIG,
 )
 
 with GPU_IMAGE.imports():
+    from difflib import get_close_matches
+
     import modal
     import numpy as np
     import torch
@@ -41,14 +45,14 @@ with GPU_IMAGE.imports():
 
 KV_CACHE_DTYPE = None  # "fp8_e5m2"
 ENFORCE_EAGER = False
-MAX_NUM_SEQS = 16 if modal.is_local() else 64
+MAX_NUM_SEQS = 1
 MIN_PIXELS = 28 * 28
 MAX_PIXELS = 1280 * 28 * 28
 TEMPERATURE = 0.1
 TOP_P = 0.001
 REPEATION_PENALTY = 1.1
 STOP_TOKEN_IDS = []
-MAX_MODEL_LEN = 8192 if modal.is_local() else 32768
+MAX_MODEL_LEN = 32768
 MAX_TOKENS = 4096
 
 
@@ -66,11 +70,7 @@ class Substructure(BaseModel):
     points: list[Point]
 
 
-class Substructures(BaseModel):
-    substructures: list[Substructure]
-
-
-JSON_STRUCTURE = Substructures.model_json_schema()
+JSON_STRUCTURE = Substructure.model_json_schema()
 
 
 # Modal
@@ -322,33 +322,13 @@ def summarize(lbl_pt_metrics):
     timeout=TIMEOUT,
 )
 def run_model(img_paths: list[Path], model: str, quant: bool) -> list[dict]:
-    conversations = []
-    for img_path in img_paths:
-        with open(img_path, "rb") as image_file:
-            base64_img = base64.b64encode(image_file.read()).decode("utf-8")
-        img_url = f"data:image/jpeg;base64,{base64_img}"
-        conversations.append(
-            [
-                {"role": "system", "content": DEFAULT_SYSTEM_PROMPT},
-                {
-                    "role": "user",
-                    "content": [
-                        {"type": "text", "text": DEFAULT_USER_PROMPT},
-                        {"type": "image_url", "image_url": {"url": img_url}},
-                    ],
-                },
-            ]
-        )
-
-    global quantization
-    global llm
-    global sampling_params
     # load pretrained vlm if not already loaded
     if "quantization" not in globals():
         quantization = "awq_marlin" if quant else None
     if "llm" not in globals():
         llm = LLM(
             model=model,
+            download_dir=f"/{PRETRAINED_VOLUME}",
             enforce_eager=ENFORCE_EAGER,
             max_num_seqs=MAX_NUM_SEQS,
             tensor_parallel_size=GPU_COUNT,
@@ -376,14 +356,50 @@ def run_model(img_paths: list[Path], model: str, quant: bool) -> list[dict]:
             max_tokens=MAX_TOKENS,
             guided_decoding=GuidedDecodingParams(json=JSON_STRUCTURE),
         )
-    outputs = llm.chat(conversations, sampling_params, use_tqdm=True)
-    preds = [out.outputs[0].text.strip() for out in outputs]
-    for pred in preds:
-        try:
-            json.loads(pred)
-        except Exception:
-            print(pred)
-    preds = [json.loads(pred)["substructures"] for pred in preds]
+
+    preds = []
+    for img_path in img_paths:
+        with open(img_path, "rb") as image_file:
+            base64_img = base64.b64encode(image_file.read()).decode("utf-8")
+        img_url = f"data:image/jpeg;base64,{base64_img}"
+        dict_outputs = {}
+        for substructure, info in SUBSTRUCTURE_INFO.items():
+            conversation = [
+                {"role": "system", "content": DEFAULT_SYSTEM_PROMPT},
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": DEFAULT_USER_PROMPT.format(
+                                substructure=substructure,
+                                min=info["min"],
+                                max=info["max"],
+                            ),
+                        },
+                        {"type": "image_url", "image_url": {"url": img_url}},
+                    ],
+                },
+            ]
+            outputs = llm.chat(conversation, sampling_params, use_tqdm=True)
+            outputs = [out.outputs[0].text.strip() for out in outputs][0]
+            try:
+                new_outputs = json.loads(outputs)
+            except Exception:
+                print(outputs)
+                raise Exception("Failed to parse output")
+            name = new_outputs["name"]
+            closest = name
+            if name not in SUBSTRUCTURE_INFO.keys():
+                closest = get_close_matches(
+                    name,
+                    SUBSTRUCTURE_INFO.keys(),
+                    n=len(SUBSTRUCTURE_INFO.keys()),
+                    cutoff=0,
+                )[0]
+                print(f"Pred name: {name}, closest name: {closest}")
+            dict_outputs[closest] = [[p["x"], p["y"]] for p in new_outputs["points"]]
+        preds.append(dict_outputs)
     return preds
 
 
@@ -435,21 +451,10 @@ def main(base: bool, sft: bool, dpo: bool, quant: bool):
                 [(batch, model, quant) for batch in img_batches]
             )
             preds = [item for lst in lst_preds for item in lst]
-
-        preds = [
-            {
-                substructure["name"]: [
-                    [point["x"], point["y"]] for point in substructure["points"]
-                ]
-                for substructure in pred
-            }
-            for pred in preds
-        ]
-
         split_metrics[split] = label_and_point_metrics(labels, preds)
 
     for split, metrics in split_metrics.items():
-        print(summarize(metrics))
+        print(f"{split}: {summarize(metrics)}")
 
 
 @app.function(

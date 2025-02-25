@@ -1,4 +1,3 @@
-import os
 import random
 import subprocess
 from pathlib import Path, PurePosixPath
@@ -81,8 +80,10 @@ GPU_IMAGE = (
             "TOKENIZERS_PARALLELISM": "false",
             "HUGGINGFACE_HUB_CACHE": f"/{PRETRAINED_VOLUME}",
             "HF_HUB_ENABLE_HF_TRANSFER": "1",
+            "FORCE_TORCHRUN": "1",
         }
     )
+    .add_local_python_source("utils")
 )
 
 
@@ -103,12 +104,7 @@ def _exec_subprocess(cmd: list[str]):
         raise subprocess.CalledProcessError(exitcode, "\n".join(cmd))
 
 
-with GPU_IMAGE.imports():
-    from huggingface_hub import HfApi
-
-
-HF_USERNAME = HfApi().whoami(token=os.getenv("HF_TOKEN"))["name"]
-
+HF_USERNAME = "andrewhinh"
 PROCESSOR = "Qwen/Qwen2.5-VL-3B-Instruct"
 BASE_HF_MODEL = "Qwen/Qwen2.5-VL-3B-Instruct"  # pretrained model or ckpt
 BASE_QUANT_MODEL = f"{HF_USERNAME}/{APP_NAME}-{BASE_HF_MODEL.split('/')[1]}-AWQ"
@@ -122,21 +118,20 @@ DPO_QUANT_MODEL = f"{DPO_HF_MODEL}-awq"
 
 SPLITS = ["train", "valid", "test"]
 
-
 DEFAULT_IMG_PATH = ARTIFACTS_PATH / "data" / "0.png"
 DEFAULT_IMG_URL = "https://ndownloader.figshare.com/files/46283905"
 DEFAULT_SYSTEM_PROMPT = "You are a helpful assistant."
 DEFAULT_USER_PROMPT = """
-Detect all substructures in the 2D ultrasound and return their locations in the form of xy-point-based outlines.
-Here are the possible substructures and number of points that may be predicted for each substructure.
-- calota, min=4, max=6
-- cavum, min=4, max=5
-- silvio, min=3, max=3
-- astes anteriors, min=0, max=2
-- talems, min=3, max=4
-- linia mitja, min=2, max=2
-- cerebel, min=6, max=8
-Notes:
-- the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.
-- all substructures are present in the ultrasound.
+Detect the {substructure} substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.
+For the {substructure}, the outline should have at least {min} points and at most {max} points.
+Note that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.
 """
+SUBSTRUCTURE_INFO = {
+    "calota": {"min": 4, "max": 6},
+    "cavum": {"min": 4, "max": 5},
+    "silvio": {"min": 3, "max": 3},
+    "astes anteriors": {"min": 2, "max": 2},
+    "talems": {"min": 3, "max": 4},
+    "linia mitja": {"min": 2, "max": 2},
+    "cerebel": {"min": 6, "max": 8},
+}

@@ -13,6 +13,7 @@ from utils import (
     GPU_IMAGE,
     MINUTES,
     SPLITS,
+    SUBSTRUCTURE_INFO,
     VOLUME_CONFIG,
 )
 
@@ -143,21 +144,24 @@ def write_sft_json(json_path: Path, xcfs: list):
                     "conversations": [
                         {
                             "from": "human",
-                            "value": f"<image>{DEFAULT_USER_PROMPT}",
+                            "value": f"<image>{DEFAULT_USER_PROMPT.format(substructure=substructure, min=SUBSTRUCTURE_INFO[substructure]['min'], max=SUBSTRUCTURE_INFO[substructure]['max'])}",
                         },
                         {
                             "from": "gpt",
                             "value": json.dumps(
-                                xcf[0],
-                                default=lambda x: x.tolist()
-                                if isinstance(x, np.ndarray)
-                                else x,
+                                {
+                                    substructure: points.tolist()
+                                    if isinstance(points, np.ndarray)
+                                    else points
+                                }
                             ),
                         },
                     ],
                     "images": [str(DATA_VOL_PATH / f"{xcf[1]}.png")],
                 }
                 for xcf in xcfs
+                for substructure, points in xcf[0].items()
+                if len(points) > 0 and substructure in SUBSTRUCTURE_INFO
             ],
             f,
             indent=4,

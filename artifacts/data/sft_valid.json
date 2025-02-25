@@ -3,11 +3,11 @@
         "conversations": [
             {
                 "from": "human",
-                "value": "<image>\nDetect all substructures in the 2D ultrasound and return their locations in the form of coordinates.\nThe format of output should be like {\"substructure_1\": [[x1, y1], [x2, y2], ...], ...}.\n"
+                "value": "<image>\nDetect the calota substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the calota, the outline should have at least 4 points and at most 6 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
             },
             {
                 "from": "gpt",
-                "value": "{\"calota\": [[461.0, 96.0], [200.0, 221.0], [593.0, 327.0], [419.0, 447.0]], \"talems\": [[353.0, 212.0], [296.0, 240.0], [331.0, 291.0]], \"cerebel\": [[290.0, 166.0], [238.0, 188.0], [311.0, 208.0], [237.0, 227.0], [289.0, 239.0], [222.0, 255.0], [299.0, 282.0], [262.0, 320.0]], \"cavum\": [[434.0, 269.0], [489.0, 275.0], [433.0, 304.0], [482.0, 309.0]], \"silvio\": [[420.0, 407.0], [366.0, 421.0], [460.0, 433.0]], \"astes anteriors\": [[535.0, 264.0], [512.0, 362.0]], \"linia mitja\": [[495.0, 302.0], [551.0, 320.0]]}"
+                "value": "{\"calota\": [[361.0, 203.0], [635.0, 328.0], [196.0, 391.0], [366.0, 509.0]]}"
             }
         ],
         "images": [
@@ -18,11 +18,101 @@
         "conversations": [
             {
                 "from": "human",
-                "value": "<image>\nDetect all substructures in the 2D ultrasound and return their locations in the form of coordinates.\nThe format of output should be like {\"substructure_1\": [[x1, y1], [x2, y2], ...], ...}.\n"
+                "value": "<image>\nDetect the talems substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the talems, the outline should have at least 3 points and at most 4 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
             },
             {
                 "from": "gpt",
-                "value": "{\"calota\": [[288.0, 238.0], [574.0, 307.0], [212.0, 427.0], [465.0, 488.0], [414.0, 516.0], [512.0, 522.0]], \"talems\": [[419.0, 313.0], [456.0, 342.0], [436.0, 387.0]], \"cerebel\": [[481.0, 258.0], [515.0, 291.0], [448.0, 312.0], [519.0, 326.0], [465.0, 340.0], [535.5, 351.5], [465.0, 372.0], [513.0, 389.0]], \"cavum\": [[297.0, 365.0], [338.0, 366.0], [364.0, 388.0], [318.0, 400.0]], \"silvio\": [[373.0, 475.0], [346.0, 500.0], [421.0, 501.0]], \"astes anteriors\": [[268.0, 348.0], [291.0, 436.0]], \"linia mitja\": [[302.0, 389.0], [256.0, 404.0]]}"
+                "value": "{\"talems\": [[463.0, 313.0], [521.0, 342.0], [457.0, 394.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/64.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the cerebel substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the cerebel, the outline should have at least 6 points and at most 8 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"cerebel\": [[550.0, 254.0], [587.0, 294.0], [513.0, 302.0], [581.0, 334.0], [527.0, 342.0], [595.0, 370.0], [522.0, 380.0], [570.0, 413.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/64.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the cavum substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the cavum, the outline should have at least 4 points and at most 5 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"cavum\": [[335.0, 364.0], [364.0, 365.0], [333.0, 383.0], [364.0, 384.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/64.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the silvio substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the silvio, the outline should have at least 3 points and at most 3 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"silvio\": [[356.0, 478.0], [392.0, 479.0], [410.0, 486.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/64.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the astes anteriors substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the astes anteriors, the outline should have at least 2 points and at most 2 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"astes anteriors\": [[261.0, 327.0], [272.0, 434.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/64.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the linia mitja substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the linia mitja, the outline should have at least 2 points and at most 2 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"linia mitja\": [[312.0, 375.0], [264.0, 382.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/64.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the calota substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the calota, the outline should have at least 4 points and at most 6 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"calota\": [[288.0, 238.0], [574.0, 307.0], [212.0, 427.0], [465.0, 488.0], [414.0, 516.0], [512.0, 522.0]]}"
             }
         ],
         "images": [
@@ -33,11 +123,101 @@
         "conversations": [
             {
                 "from": "human",
-                "value": "<image>\nDetect all substructures in the 2D ultrasound and return their locations in the form of coordinates.\nThe format of output should be like {\"substructure_1\": [[x1, y1], [x2, y2], ...], ...}.\n"
+                "value": "<image>\nDetect the talems substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the talems, the outline should have at least 3 points and at most 4 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
             },
             {
                 "from": "gpt",
-                "value": "{\"calota\": [[276.0, 236.0], [553.0, 289.0], [188.0, 395.0], [388.0, 489.0]], \"talems\": [[399.0, 288.0], [439.0, 321.0], [414.0, 362.0]], \"cerebel\": [[460.0, 236.0], [502.0, 275.0], [438.0, 286.0], [506.0, 304.0], [446.0, 320.0], [522.0, 327.0], [453.0, 343.0], [496.0, 363.0]], \"cavum\": [[328.0, 340.0], [281.0, 347.0], [337.0, 367.0], [291.0, 377.0]], \"silvio\": [[361.0, 454.0], [393.0, 464.0], [328.0, 481.0]], \"astes anteriors\": [[234.0, 329.0], [272.0, 423.0]], \"linia mitja\": [[281.0, 365.0], [224.0, 380.0]]}"
+                "value": "{\"talems\": [[419.0, 313.0], [456.0, 342.0], [436.0, 387.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/29.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the cerebel substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the cerebel, the outline should have at least 6 points and at most 8 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"cerebel\": [[481.0, 258.0], [515.0, 291.0], [448.0, 312.0], [519.0, 326.0], [465.0, 340.0], [535.5, 351.5], [465.0, 372.0], [513.0, 389.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/29.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the cavum substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the cavum, the outline should have at least 4 points and at most 5 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"cavum\": [[297.0, 365.0], [338.0, 366.0], [364.0, 388.0], [318.0, 400.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/29.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the silvio substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the silvio, the outline should have at least 3 points and at most 3 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"silvio\": [[373.0, 475.0], [346.0, 500.0], [421.0, 501.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/29.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the astes anteriors substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the astes anteriors, the outline should have at least 2 points and at most 2 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"astes anteriors\": [[268.0, 348.0], [291.0, 436.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/29.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the linia mitja substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the linia mitja, the outline should have at least 2 points and at most 2 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"linia mitja\": [[302.0, 389.0], [256.0, 404.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/29.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the calota substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the calota, the outline should have at least 4 points and at most 6 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"calota\": [[276.0, 236.0], [553.0, 289.0], [188.0, 395.0], [388.0, 489.0]]}"
             }
         ],
         "images": [
@@ -48,11 +228,101 @@
         "conversations": [
             {
                 "from": "human",
-                "value": "<image>\nDetect all substructures in the 2D ultrasound and return their locations in the form of coordinates.\nThe format of output should be like {\"substructure_1\": [[x1, y1], [x2, y2], ...], ...}.\n"
+                "value": "<image>\nDetect the talems substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the talems, the outline should have at least 3 points and at most 4 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
             },
             {
                 "from": "gpt",
-                "value": "{\"calota\": [[434.0, 215.0], [250.0, 306.0], [528.0, 355.0], [411.0, 441.0]], \"talems\": [[349.0, 298.0], [323.0, 318.0], [341.0, 346.0]], \"cerebel\": [[305.0, 264.0], [273.0, 286.0], [327.0, 297.0], [271.0, 310.0], [318.0, 318.0], [265.0, 335.0], [315.0, 341.0], [284.0, 366.0]], \"cavum\": [[449.0, 323.0], [422.0, 329.0], [423.0, 347.0], [443.0, 355.0]], \"silvio\": [[380.0, 409.0], [415.0, 410.0], [436.0, 424.0]], \"astes anteriors\": [[469.0, 306.0], [471.0, 374.0]], \"linia mitja\": [[453.0, 342.0], [485.0, 347.0]]}"
+                "value": "{\"talems\": [[399.0, 288.0], [439.0, 321.0], [414.0, 362.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/27.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the cerebel substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the cerebel, the outline should have at least 6 points and at most 8 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"cerebel\": [[460.0, 236.0], [502.0, 275.0], [438.0, 286.0], [506.0, 304.0], [446.0, 320.0], [522.0, 327.0], [453.0, 343.0], [496.0, 363.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/27.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the cavum substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the cavum, the outline should have at least 4 points and at most 5 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"cavum\": [[328.0, 340.0], [281.0, 347.0], [337.0, 367.0], [291.0, 377.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/27.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the silvio substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the silvio, the outline should have at least 3 points and at most 3 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"silvio\": [[361.0, 454.0], [393.0, 464.0], [328.0, 481.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/27.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the astes anteriors substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the astes anteriors, the outline should have at least 2 points and at most 2 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"astes anteriors\": [[234.0, 329.0], [272.0, 423.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/27.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the linia mitja substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the linia mitja, the outline should have at least 2 points and at most 2 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"linia mitja\": [[281.0, 365.0], [224.0, 380.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/27.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the calota substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the calota, the outline should have at least 4 points and at most 6 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"calota\": [[463.0, 163.0], [196.0, 230.0], [533.0, 330.0], [396.0, 426.0]]}"
             }
         ],
         "images": [
@@ -63,11 +333,101 @@
         "conversations": [
             {
                 "from": "human",
-                "value": "<image>\nDetect all substructures in the 2D ultrasound and return their locations in the form of coordinates.\nThe format of output should be like {\"substructure_1\": [[x1, y1], [x2, y2], ...], ...}.\n"
+                "value": "<image>\nDetect the talems substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the talems, the outline should have at least 3 points and at most 4 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
             },
             {
                 "from": "gpt",
-                "value": "{\"C\\u00f3rtex\": [[273.0, 466.0], [303.0, 476.0]], \"calota\": [[342.0, 186.0], [569.0, 324.0], [192.0, 357.0], [368.0, 498.0]], \"talems\": [[428.0, 296.0], [462.0, 331.0], [356.0, 341.0], [432.0, 371.0]], \"cerebel\": [[507.0, 258.0], [543.0, 295.0], [468.0, 299.0], [533.0, 327.0], [470.0, 333.0], [544.0, 358.0], [475.0, 363.0], [520.0, 397.0]], \"cavum\": [[297.0, 325.0], [345.0, 327.0], [302.0, 358.0], [348.0, 358.0]], \"silvio\": [[357.0, 452.0], [321.0, 466.0], [390.0, 474.0]], \"astes anteriors\": [[266.0, 291.0], [273.0, 399.0]], \"linia mitja\": [[297.0, 344.0], [249.0, 347.0]]}"
+                "value": "{\"talems\": [[331.0, 241.0], [297.0, 267.0], [322.0, 314.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/91.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the cerebel substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the cerebel, the outline should have at least 6 points and at most 8 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"cerebel\": [[282.0, 195.0], [240.0, 219.0], [305.0, 234.0], [236.0, 254.0], [289.0, 265.0], [224.0, 284.0], [286.0, 296.0], [244.0, 320.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/91.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the cavum substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the cavum, the outline should have at least 4 points and at most 5 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"cavum\": [[425.0, 286.0], [461.0, 292.0], [418.0, 312.0], [443.0, 328.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/91.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the silvio substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the silvio, the outline should have at least 3 points and at most 3 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"silvio\": [[385.0, 385.0], [356.0, 390.0], [407.0, 390.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/91.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the astes anteriors substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the astes anteriors, the outline should have at least 2 points and at most 2 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"astes anteriors\": [[487.0, 274.0], [457.0, 351.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/91.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the linia mitja substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the linia mitja, the outline should have at least 2 points and at most 2 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"linia mitja\": [[452.0, 308.0], [498.0, 318.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/91.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the calota substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the calota, the outline should have at least 4 points and at most 6 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"calota\": [[490.0, 156.0], [208.0, 317.0], [656.0, 358.0], [477.0, 516.0]]}"
             }
         ],
         "images": [
@@ -78,11 +438,86 @@
         "conversations": [
             {
                 "from": "human",
-                "value": "<image>\nDetect all substructures in the 2D ultrasound and return their locations in the form of coordinates.\nThe format of output should be like {\"substructure_1\": [[x1, y1], [x2, y2], ...], ...}.\n"
+                "value": "<image>\nDetect the talems substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the talems, the outline should have at least 3 points and at most 4 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
             },
             {
                 "from": "gpt",
-                "value": "{\"calota\": [[307.0, 214.0], [565.0, 330.0], [183.0, 410.0], [348.0, 538.0]], \"talems\": [[408.0, 313.0], [445.0, 348.0], [424.0, 395.0]], \"cerebel\": [[470.0, 263.0], [517.0, 304.0], [438.0, 314.0], [522.0, 335.0], [454.0, 347.0], [536.0, 361.0], [458.0, 376.0], [501.0, 412.0]], \"cavum\": [[280.0, 365.0], [340.0, 364.0], [304.0, 395.0], [338.0, 397.0]], \"silvio\": [[353.0, 480.0], [385.0, 491.0], [318.0, 516.0]], \"astes anteriors\": [[253.0, 353.0], [265.0, 439.0]], \"linia mitja\": [[277.0, 393.0], [223.0, 403.0]]}"
+                "value": "{\"talems\": [[390.0, 289.0], [334.0, 331.0], [466.0, 343.0], [381.0, 390.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/101.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the cerebel substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the cerebel, the outline should have at least 6 points and at most 8 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"cerebel\": [[296.0, 245.0], [254.0, 280.0], [333.0, 294.0], [255.0, 319.0], [330.0, 330.0], [250.0, 355.0], [324.0, 364.0], [277.0, 407.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/101.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the cavum substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the cavum, the outline should have at least 4 points and at most 5 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"cavum\": [[477.0, 326.0], [524.0, 328.0], [475.0, 362.0], [524.0, 363.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/101.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the silvio substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the silvio, the outline should have at least 3 points and at most 3 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"silvio\": [[464.0, 465.0], [498.0, 467.0], [431.0, 475.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/101.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the linia mitja substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the linia mitja, the outline should have at least 2 points and at most 2 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"linia mitja\": [[526.0, 350.0], [606.0, 356.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/101.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the calota substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the calota, the outline should have at least 4 points and at most 6 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"calota\": [[307.0, 214.0], [565.0, 330.0], [183.0, 410.0], [348.0, 538.0]]}"
             }
         ],
         "images": [
@@ -93,11 +528,101 @@
         "conversations": [
             {
                 "from": "human",
-                "value": "<image>\nDetect all substructures in the 2D ultrasound and return their locations in the form of coordinates.\nThe format of output should be like {\"substructure_1\": [[x1, y1], [x2, y2], ...], ...}.\n"
+                "value": "<image>\nDetect the talems substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the talems, the outline should have at least 3 points and at most 4 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
             },
             {
                 "from": "gpt",
-                "value": "{\"calota\": [[363.0, 144.0], [654.0, 298.0], [162.0, 329.0], [363.0, 497.0]], \"talems\": [[470.0, 259.0], [530.0, 306.0], [477.0, 356.0]], \"cerebel\": [[572.0, 206.0], [531.0, 263.0], [616.0, 263.0], [617.0, 302.0], [545.0, 305.0], [545.0, 347.0], [626.0, 348.0], [584.0, 399.0]], \"cavum\": [[298.0, 303.0], [362.0, 304.0], [298.0, 345.0], [361.0, 344.0]], \"silvio\": [[366.0, 459.0], [323.0, 484.0], [425.0, 486.0]], \"astes anteriors\": [[247.0, 274.0], [248.0, 397.0]], \"linia mitja\": [[198.0, 330.0], [256.0, 332.0]]}"
+                "value": "{\"talems\": [[408.0, 313.0], [445.0, 348.0], [424.0, 395.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/4.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the cerebel substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the cerebel, the outline should have at least 6 points and at most 8 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"cerebel\": [[470.0, 263.0], [517.0, 304.0], [438.0, 314.0], [522.0, 335.0], [454.0, 347.0], [536.0, 361.0], [458.0, 376.0], [501.0, 412.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/4.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the cavum substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the cavum, the outline should have at least 4 points and at most 5 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"cavum\": [[280.0, 365.0], [340.0, 364.0], [304.0, 395.0], [338.0, 397.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/4.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the silvio substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the silvio, the outline should have at least 3 points and at most 3 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"silvio\": [[353.0, 480.0], [385.0, 491.0], [318.0, 516.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/4.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the astes anteriors substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the astes anteriors, the outline should have at least 2 points and at most 2 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"astes anteriors\": [[253.0, 353.0], [265.0, 439.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/4.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the linia mitja substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the linia mitja, the outline should have at least 2 points and at most 2 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"linia mitja\": [[277.0, 393.0], [223.0, 403.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/4.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the calota substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the calota, the outline should have at least 4 points and at most 6 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"calota\": [[469.0, 122.0], [213.0, 252.0], [632.0, 308.0], [456.0, 451.0]]}"
             }
         ],
         "images": [
@@ -108,11 +633,101 @@
         "conversations": [
             {
                 "from": "human",
-                "value": "<image>\nDetect all substructures in the 2D ultrasound and return their locations in the form of coordinates.\nThe format of output should be like {\"substructure_1\": [[x1, y1], [x2, y2], ...], ...}.\n"
+                "value": "<image>\nDetect the talems substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the talems, the outline should have at least 3 points and at most 4 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
             },
             {
                 "from": "gpt",
-                "value": "{\"calota\": [[485.0, 200.0], [290.0, 287.0], [591.0, 354.0], [449.0, 453.0]], \"talems\": [[344.0, 196.0], [411.0, 283.0], [368.0, 305.0], [400.0, 344.0]], \"cerebel\": [[352.0, 243.0], [321.0, 274.0], [380.0, 282.0], [320.0, 295.0], [362.0, 304.0], [307.0, 322.0], [363.0, 332.5], [329.0, 356.0]], \"cavum\": [[465.0, 321.0], [517.0, 323.0], [462.0, 344.0], [503.0, 348.0]], \"silvio\": [[445.0, 412.0], [472.0, 414.0], [421.0, 432.0]], \"astes anteriors\": [[541.0, 309.0], [522.0, 380.0]], \"linia mitja\": [[516.0, 338.0], [547.0, 346.0]]}"
+                "value": "{\"talems\": [[377.0, 237.0], [334.0, 270.0], [369.0, 323.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/54.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the cerebel substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the cerebel, the outline should have at least 6 points and at most 8 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"cerebel\": [[308.0, 182.0], [269.0, 228.0], [342.0, 236.0], [267.0, 263.0], [326.0, 269.0], [251.0, 303.0], [329.0, 308.0], [298.0, 344.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/54.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the cavum substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the cavum, the outline should have at least 4 points and at most 5 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"cavum\": [[518.0, 271.0], [464.0, 284.0], [464.0, 308.0], [513.0, 312.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/54.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the silvio substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the silvio, the outline should have at least 3 points and at most 3 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"silvio\": [[448.0, 404.0], [480.0, 416.0], [414.0, 419.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/54.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the astes anteriors substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the astes anteriors, the outline should have at least 2 points and at most 2 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"astes anteriors\": [[555.0, 236.0], [543.0, 357.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/54.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the linia mitja substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the linia mitja, the outline should have at least 2 points and at most 2 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"linia mitja\": [[519.0, 303.0], [580.0, 305.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/54.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the calota substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the calota, the outline should have at least 4 points and at most 6 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"calota\": [[439.0, 162.0], [249.0, 246.0], [555.0, 330.0], [398.0, 416.0]]}"
             }
         ],
         "images": [
@@ -123,11 +738,101 @@
         "conversations": [
             {
                 "from": "human",
-                "value": "<image>\nDetect all substructures in the 2D ultrasound and return their locations in the form of coordinates.\nThe format of output should be like {\"substructure_1\": [[x1, y1], [x2, y2], ...], ...}.\n"
+                "value": "<image>\nDetect the talems substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the talems, the outline should have at least 3 points and at most 4 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
             },
             {
                 "from": "gpt",
-                "value": "{\"calota\": [[544.0, 209.0], [215.0, 313.0], [647.0, 407.0], [475.0, 531.0]], \"talems\": [[394.0, 315.0], [348.0, 344.0], [373.0, 386.0]], \"cerebel\": [[322.0, 258.0], [275.0, 290.0], [353.0, 310.5], [276.0, 328.0], [341.0, 343.0], [260.0, 365.0], [338.0, 378.0], [293.0, 415.0]], \"cavum\": [[508.0, 368.0], [539.0, 369.0], [500.0, 394.0], [539.0, 403.0]], \"silvio\": [[490.0, 488.0], [518.0, 502.0], [429.0, 506.0]], \"astes anteriors\": [[584.0, 346.0], [554.0, 448.0]], \"linia mitja\": [[540.0, 390.0], [595.0, 399.0]]}"
+                "value": "{\"talems\": [[361.0, 248.0], [329.0, 270.0], [354.0, 310.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/75.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the cerebel substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the cerebel, the outline should have at least 6 points and at most 8 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"cerebel\": [[315.0, 212.0], [280.0, 228.0], [331.0, 238.0], [280.0, 258.0], [323.0, 268.0], [269.0, 284.0], [324.0, 297.0], [294.0, 315.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/75.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the cavum substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the cavum, the outline should have at least 4 points and at most 5 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"cavum\": [[416.0, 285.0], [450.0, 286.0], [417.0, 309.0], [452.0, 315.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/75.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the silvio substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the silvio, the outline should have at least 3 points and at most 3 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"silvio\": [[410.0, 377.0], [385.0, 378.0], [430.0, 387.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/75.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the astes anteriors substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the astes anteriors, the outline should have at least 2 points and at most 2 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"astes anteriors\": [[487.0, 279.0], [477.0, 348.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/75.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the linia mitja substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the linia mitja, the outline should have at least 2 points and at most 2 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"linia mitja\": [[462.0, 307.0], [514.0, 318.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/75.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the calota substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the calota, the outline should have at least 4 points and at most 6 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"calota\": [[544.0, 209.0], [215.0, 313.0], [647.0, 407.0], [475.0, 531.0]]}"
             }
         ],
         "images": [
@@ -138,11 +843,191 @@
         "conversations": [
             {
                 "from": "human",
-                "value": "<image>\nDetect all substructures in the 2D ultrasound and return their locations in the form of coordinates.\nThe format of output should be like {\"substructure_1\": [[x1, y1], [x2, y2], ...], ...}.\n"
+                "value": "<image>\nDetect the talems substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the talems, the outline should have at least 3 points and at most 4 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
             },
             {
                 "from": "gpt",
-                "value": "{\"calota\": [[279.0, 194.0], [541.0, 304.0], [165.0, 343.0], [341.0, 478.0]], \"talems\": [[399.0, 285.0], [448.0, 313.0], [415.0, 353.0]], \"cerebel\": [[461.0, 237.0], [434.0, 285.0], [505.0, 284.0], [500.0, 309.0], [455.0, 312.0], [509.0, 343.0], [455.0, 345.0], [480.0, 381.0]], \"cavum\": [[271.0, 315.0], [324.0, 328.0], [271.0, 345.0], [321.0, 344.0]], \"silvio\": [[310.0, 435.0], [342.0, 436.0], [368.0, 464.0]], \"astes anteriors\": [[233.0, 286.0], [247.0, 385.0]], \"linia mitja\": [[263.0, 330.0], [222.0, 335.0]]}"
+                "value": "{\"talems\": [[394.0, 315.0], [348.0, 344.0], [373.0, 386.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/11.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the cerebel substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the cerebel, the outline should have at least 6 points and at most 8 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"cerebel\": [[322.0, 258.0], [275.0, 290.0], [353.0, 310.5], [276.0, 328.0], [341.0, 343.0], [260.0, 365.0], [338.0, 378.0], [293.0, 415.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/11.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the cavum substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the cavum, the outline should have at least 4 points and at most 5 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"cavum\": [[508.0, 368.0], [539.0, 369.0], [500.0, 394.0], [539.0, 403.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/11.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the silvio substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the silvio, the outline should have at least 3 points and at most 3 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"silvio\": [[490.0, 488.0], [518.0, 502.0], [429.0, 506.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/11.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the astes anteriors substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the astes anteriors, the outline should have at least 2 points and at most 2 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"astes anteriors\": [[584.0, 346.0], [554.0, 448.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/11.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the linia mitja substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the linia mitja, the outline should have at least 2 points and at most 2 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"linia mitja\": [[540.0, 390.0], [595.0, 399.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/11.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the calota substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the calota, the outline should have at least 4 points and at most 6 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"calota\": [[288.0, 217.0], [572.0, 274.0], [205.0, 406.0], [405.0, 490.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/69.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the talems substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the talems, the outline should have at least 3 points and at most 4 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"talems\": [[427.0, 284.0], [461.0, 311.0], [449.0, 357.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/69.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the cerebel substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the cerebel, the outline should have at least 6 points and at most 8 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"cerebel\": [[483.0, 224.0], [526.0, 261.0], [459.0, 277.0], [532.0, 290.0], [467.0, 309.0], [545.0, 314.0], [472.0, 341.0], [516.0, 356.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/69.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the cavum substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the cavum, the outline should have at least 4 points and at most 5 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"cavum\": [[311.0, 342.0], [352.0, 346.0], [354.0, 358.0], [325.0, 371.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/69.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the silvio substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the silvio, the outline should have at least 3 points and at most 3 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"silvio\": [[406.0, 448.0], [375.0, 465.0], [435.0, 465.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/69.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the astes anteriors substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the astes anteriors, the outline should have at least 2 points and at most 2 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"astes anteriors\": [[269.0, 323.0], [309.0, 413.0]]}"
+            }
+        ],
+        "images": [
+            "/home/andrewhinh/Desktop/Projects/mhf/artifacts/data/69.png"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nDetect the linia mitja substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.\nFor the linia mitja, the outline should have at least 2 points and at most 2 points.\nNote that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.\n"
+            },
+            {
+                "from": "gpt",
+                "value": "{\"linia mitja\": [[307.0, 366.0], [275.0, 378.0]]}"
             }
         ],
         "images": [
