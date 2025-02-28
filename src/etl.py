@@ -4,14 +4,7 @@ import random
 import tempfile
 from pathlib import Path
 
-import cv2
 import modal
-import numpy as np
-import requests
-from gimpformats.gimpXcfDocument import GimpDocument
-from PIL import Image
-from tqdm import tqdm
-from tqdm.contrib.concurrent import thread_map
 
 from utils import (
     APP_NAME,
@@ -20,6 +13,7 @@ from utils import (
     GPU_IMAGE,
     MINUTES,
     SPLITS,
+    SUBSTRUCTURE_INFO,
     VOLUME_CONFIG,
 )
 
@@ -35,6 +29,16 @@ app = modal.App(name=f"{APP_NAME}-etl")
 # helpers
 DATA_URL = "https://api.figshare.com/v2/collections/6984822/articles?page_size=240"
 TRAIN_SZ, VAL_SZ, TEST_SZ = 0.8, 0.1, 0.1
+
+
+with GPU_IMAGE.imports():
+    import cv2
+    import numpy as np
+    import requests
+    from gimpformats.gimpXcfDocument import GimpDocument
+    from PIL import Image
+    from tqdm import tqdm
+    from tqdm.contrib.concurrent import thread_map
 
 
 @app.function(
@@ -140,21 +144,26 @@ def write_sft_json(json_path: Path, xcfs: list):
                     "conversations": [
                         {
                             "from": "human",
-                            "value": f"<image>{DEFAULT_USER_PROMPT}",
+                            "value": f"<image>{DEFAULT_USER_PROMPT.format(substructure=substructure, min=SUBSTRUCTURE_INFO[substructure]['min'], max=SUBSTRUCTURE_INFO[substructure]['max'])}",
                         },
                         {
                             "from": "gpt",
                             "value": json.dumps(
-                                xcf[0],
-                                default=lambda x: x.tolist()
-                                if isinstance(x, np.ndarray)
-                                else x,
+                                {
+                                    "name": substructure,
+                                    "points": [
+                                        {"x": float(point[0]), "y": float(point[1])}
+                                        for point in list(points)
+                                    ],
+                                }
                             ),
                         },
                     ],
                     "images": [str(DATA_VOL_PATH / f"{xcf[1]}.png")],
                 }
                 for xcf in xcfs
+                for substructure, points in xcf[0].items()
+                if len(points) > 0 and substructure in SUBSTRUCTURE_INFO
             ],
             f,
             indent=4,
