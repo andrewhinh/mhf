@@ -2,7 +2,6 @@
 
 import json
 import os
-from pathlib import Path
 
 import modal
 
@@ -19,6 +18,7 @@ from utils import (
     SECRETS,
     SFT_HF_MODEL,
     SFT_MODEL,
+    TRAIN_REPO_PATH,
     VOLUME_CONFIG,
     _exec_subprocess,
 )
@@ -26,22 +26,10 @@ from utils import (
 # -----------------------------------------------------------------------------
 
 # Modal
-TRAIN_REPO_PATH = Path("/LLaMA-Factory")
-IMAGE = GPU_IMAGE.run_commands(
-    [
-        f"git clone --depth 1 https://github.com/hiyouga/LLaMA-Factory.git {TRAIN_REPO_PATH}",
-        f"cd {TRAIN_REPO_PATH} && pip install -e '.[torch,metrics]'",
-    ]
-).env(
-    {
-        "FORCE_TORCHRUN": "1",
-    }
-)
 TIMEOUT = 24 * 60 * MINUTES
 
 GPU_TYPE = "h100"
 GPU_COUNT = 2
-GPU_SIZE = None  # options = None, "40GB", "80GB"
 GPU_CONFIG = f"{GPU_TYPE}:{GPU_COUNT}"
 
 app = modal.App(name=f"{APP_NAME}-train")
@@ -112,8 +100,8 @@ sft_config = {
     "stage": "sft",
     "do_train": True,
     "finetuning_type": "full",
-    "freeze_vision_tower": False,
-    "freeze_multi_modal_projector": False,
+    "freeze_vision_tower": True,
+    "freeze_multi_modal_projector": True,
     "train_mm_proj_only": False,
     "deepspeed": str(DS_PATH),
     ### dataset
@@ -126,20 +114,20 @@ sft_config = {
     ### output
     "output_dir": str(RUNS_VOL_PATH / SFT_MODEL),
     "logging_steps": 10,
-    "save_steps": 500,
+    "save_steps": 200,
     "plot_loss": True,
     "overwrite_output_dir": True,
     "include_effective_tokens_per_second": True,
     ### train
     "per_device_train_batch_size": 4,
     "gradient_accumulation_steps": 1,
-    "learning_rate": 1.0e-6,
-    "max_steps": 100,
+    "learning_rate": 3.0e-5,
+    "max_steps": 200,
     "lr_scheduler_type": "cosine",
-    "warmup_ratio": 0.1,
+    "warmup_ratio": 0.2,
     "bf16": True,
     "ddp_timeout": 180000000,
-    "weight_decay": 3e2,
+    "weight_decay": 0.01,
     ### eval
     "val_size": 0.1,
     "per_device_eval_batch_size": 4,
@@ -310,7 +298,7 @@ def main(sft: bool, dpo: bool):
 
 
 @app.function(
-    image=IMAGE,
+    image=GPU_IMAGE,
     gpu=GPU_CONFIG,
     volumes=VOLUME_CONFIG,
     secrets=SECRETS,

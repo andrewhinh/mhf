@@ -3,6 +3,7 @@ import subprocess
 from pathlib import Path, PurePosixPath
 
 import modal
+from pydantic import BaseModel
 
 random.seed(42)
 APP_NAME = "mhf"
@@ -42,6 +43,7 @@ else:
 CPU = 20  # cores (Modal max)
 MINUTES = 60  # seconds
 
+TRAIN_REPO_PATH = Path("/LLaMA-Factory")
 GPU_IMAGE = (
     modal.Image.from_registry(  # start from an official NVIDIA CUDA image
         TAG, add_python=PYTHON_VERSION
@@ -75,6 +77,12 @@ GPU_IMAGE = (
     .run_commands(  # add flash-attn
         "pip install flash-attn==2.7.4.post1 --no-build-isolation"
     )
+    .run_commands(
+        [
+            f"git clone --depth 1 https://github.com/hiyouga/LLaMA-Factory.git {TRAIN_REPO_PATH}",
+            f"cd {TRAIN_REPO_PATH} && pip install -e '.[torch,metrics]'",
+        ]
+    )
     .env(
         {
             "TOKENIZERS_PARALLELISM": "false",
@@ -104,6 +112,7 @@ def _exec_subprocess(cmd: list[str]):
         raise subprocess.CalledProcessError(exitcode, "\n".join(cmd))
 
 
+# model
 HF_USERNAME = "andrewhinh"
 PROCESSOR = "Qwen/Qwen2.5-VL-3B-Instruct"
 BASE_HF_MODEL = "Qwen/Qwen2.5-VL-3B-Instruct"  # pretrained model or ckpt
@@ -116,8 +125,10 @@ DPO_MERGED = f"{DPO_MODEL}-merged"
 DPO_HF_MODEL = f"{HF_USERNAME}/{APP_NAME}-{DPO_MERGED}"  # pretrained model or ckpt
 DPO_QUANT_MODEL = f"{DPO_HF_MODEL}-awq"
 
+# data
 SPLITS = ["train", "valid", "test"]
 
+# inference
 DEFAULT_IMG_PATH = ARTIFACTS_PATH / "data" / "0.png"
 DEFAULT_IMG_URL = "https://ndownloader.figshare.com/files/46283905"
 DEFAULT_SYSTEM_PROMPT = "You are a helpful assistant."
@@ -125,6 +136,16 @@ DEFAULT_USER_PROMPT = """
 Detect the {substructure} substructure in the 2D ultrasound and return its location in the form of an xy-point-based outline.
 For the {substructure}, the outline should have at least {min} points and at most {max} points.
 Note that the ultrasounds are of size 800x600 which indicates the limits of the x and y coordinates.
+Return a json object as follows:
+```json
+{{
+    "name": "{{substructure}}",
+    "points": [
+        {{"x": float, "y": float}},
+        ...
+    ]
+}}
+```
 """
 SUBSTRUCTURE_INFO = {
     "calota": {"min": 4, "max": 6},
@@ -135,3 +156,16 @@ SUBSTRUCTURE_INFO = {
     "linia mitja": {"min": 2, "max": 2},
     "cerebel": {"min": 6, "max": 8},
 }
+
+
+class Point(BaseModel):
+    x: float
+    y: float
+
+
+class Substructure(BaseModel):
+    name: str
+    points: list[Point]
+
+
+JSON_STRUCTURE = Substructure.model_json_schema()

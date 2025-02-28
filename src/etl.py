@@ -150,9 +150,11 @@ def write_sft_json(json_path: Path, xcfs: list):
                             "from": "gpt",
                             "value": json.dumps(
                                 {
-                                    substructure: points.tolist()
-                                    if isinstance(points, np.ndarray)
-                                    else points
+                                    "name": substructure,
+                                    "points": [
+                                        {"x": float(point[0]), "y": float(point[1])}
+                                        for point in list(points)
+                                    ],
                                 }
                             ),
                         },

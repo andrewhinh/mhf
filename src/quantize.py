@@ -243,7 +243,6 @@ def helper(model_path, quant_config, save_path, save_hub):
         save_path,
         torch_dtype=torch.bfloat16,
         attn_implementation="flash_attention_2",
-        device_map="auto",
     )
     model.push_to_hub(save_hub)
     processor.push_to_hub(save_hub)

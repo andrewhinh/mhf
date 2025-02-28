@@ -13,6 +13,7 @@ from utils import (
     DPO_HF_MODEL,
     DPO_QUANT_MODEL,
     GPU_IMAGE,
+    JSON_STRUCTURE,
     MINUTES,
     PRETRAINED_VOLUME,
     SECRETS,
@@ -31,7 +32,6 @@ with GPU_IMAGE.imports():
     import torch
     import yaml
     from more_itertools import chunked
-    from pydantic import BaseModel
     from scipy.optimize import linear_sum_assignment
     from scipy.spatial.distance import directed_hausdorff
     from sklearn.metrics import auc, precision_recall_curve, roc_auc_score
@@ -57,21 +57,6 @@ MAX_TOKENS = 4096
 
 
 # -----------------------------------------------------------------------------
-
-
-# output schema
-class Point(BaseModel):
-    x: float
-    y: float
-
-
-class Substructure(BaseModel):
-    name: str
-    points: list[Point]
-
-
-JSON_STRUCTURE = Substructure.model_json_schema()
-
 
 # Modal
 
@@ -418,6 +403,19 @@ def main(base: bool, sft: bool, dpo: bool, quant: bool):
             read_ds = yaml.safe_load(f)
         img_paths = [sample["images"][0] for sample in read_ds]
         labels = [json.loads(sample["conversations"][1]["value"]) for sample in read_ds]
+
+        # combine per-substructure annotations
+        img_paths = [sample["images"][0] for sample in read_ds][
+            :: len(SUBSTRUCTURE_INFO)
+        ]
+        label_batches = list(chunked(labels, len(SUBSTRUCTURE_INFO)))
+        labels = [
+            {
+                label["name"]: [[p["x"], p["y"]] for p in label["points"]]
+                for label in label_batch
+            }
+            for label_batch in label_batches
+        ]
 
         ## run
         img_batches = list(chunked(img_paths, MAX_NUM_SEQS))
