@@ -171,3 +171,7 @@ cython_debug/
 .pypirc
 
 **/runs
+
+# api + app
+**/.sesskey
+**/Python-Antivirus/
