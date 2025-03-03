@@ -4,6 +4,9 @@ import json
 import os
 
 import modal
+import torch
+import yaml
+from transformers import AutoProcessor, Qwen2_5_VLForConditionalGeneration
 
 from utils import (
     APP_NAME,
@@ -207,11 +210,6 @@ dpo_merge_config = {
 # -----------------------------------------------------------------------------
 
 # helpers
-
-with GPU_IMAGE.imports():
-    import torch
-    import yaml
-    from transformers import AutoProcessor, Qwen2_5_VLForConditionalGeneration
 
 
 def push_to_hub(local_dir: str, model_path: str):

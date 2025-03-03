@@ -2,6 +2,245 @@
 
 MHF Automated Labelling
 
+## helpful links
+
+- [Web app](https://bit.ly/mhf-winter-2025)
+- [Huggingface models](https://huggingface.co/andrewhinh)
+- [Weights and Biases runs](https://wandb.ai/andrewhinh/mhf?nw=nwuserandrewhinh)
+
+## setup
+
+Run:
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+uv sync --all-extras --dev
+uv pip install git+https://github.com/seungwoos/AutoAWQ.git@add-qwen2_5_vl --no-deps --no-build-isolation
+uv run pre-commit install
+git clone https://github.com/Len-Stevens/Python-Antivirus.git
+modal setup
+modal config set-environment dev
+echo "alias modal='uv run modal'" >> ~/.bashrc
+echo "export PYTHONPATH=.:$PYTHONPATH" >> ~/.bashrc
+echo "export TOKENIZERS_PARALLELISM=false" >> ~/.bashrc
+echo "export HF_HUB_ENABLE_HF_TRANSFER=1" >> ~/.bashrc
+source ~/.bashrc
+```
+
+Create a `.env`:
+
+```bash
+WANDB_API_KEY=
+WANDB_ENTITY=
+```
+
+## repo structure
+
+```bash
+.
+├── artifacts           # data + runs.
+├── src                 # src.
+│   ├── api.py          # api.
+│   ├── app.py          # website.
+│   ├── eda.ipynb       # eda.
+│   ├── etl.py          # etl.
+│   ├── eval.py         # eval.
+│   ├── quantize.py     # quantize.
+│   └── utils.py        # utils.
+```
+
+## usage
+
+Test the API:
+
+```bash
+modal run src/api.py
+```
+
+Serve the API:
+
+```bash
+uv run src/api.py
+```
+
+or
+
+```bash
+modal serve src/api.py
+```
+
+Deploy the API:
+
+```bash
+modal deploy --env=main src/api.py
+```
+
+Serve the website:
+
+```bash
+uv run src/app.py
+```
+
+or
+
+```bash
+modal serve src/app.py
+```
+
+Deploy the website:
+
+```bash
+modal deploy --env=main src/app.py
+```
+
+## training
+
+Download data:
+
+```bash
+uv run src/etl.py --sft
+```
+
+or
+
+```bash
+modal run src/etl.py --sft
+```
+
+Eval base model:
+
+```bash
+uv run src/eval.py --base
+```
+
+or
+
+```bash
+modal run src/eval.py --base
+```
+
+Quantize base model:
+
+```bash
+uv run src/quantize.py --base
+```
+
+or
+
+```bash
+modal run src/quantize.py --base
+```
+
+Eval quantized base model:
+
+```bash
+uv run src/eval.py --base --quant
+```
+
+or
+
+```bash
+modal run src/eval.py --base --quant
+```
+
+Run SFT:
+
+```bash
+modal run src/train.py --sft
+```
+
+Eval SFT model:
+
+```bash
+uv run src/eval.py --sft
+```
+
+or
+
+```bash
+modal run src/eval.py --sft
+```
+
+Quantize the SFT model:
+
+```bash
+uv run src/quantize.py --sft
+```
+
+or
+
+```bash
+modal run src/quantize.py --sft
+```
+
+Eval quantized SFT model:
+
+```bash
+uv run src/eval.py --sft --quant
+```
+
+or
+
+```bash
+modal run src/eval.py --sft --quant
+```
+
+## future plans
+
+Run trained VLM on train data and construct new dataset with only relabelled incorrect examples:
+
+```bash
+uv run src/etl.py --dpo
+```
+
+or
+
+```bash
+modal run src/etl.py --dpo
+```
+
+Run DPO:
+
+```bash
+modal run src/train.py --dpo
+```
+
+Eval DPO model:
+
+```bash
+uv run src/eval.py --dpo
+```
+
+or
+
+```bash
+modal run src/eval.py --dpo
+```
+
+Quantize the DPO model:
+
+```bash
+uv run src/quantize.py --dpo
+```
+
+or
+
+```bash
+modal run src/quantize.py --dpo
+```
+
+Eval quantized DPO model:
+
+```bash
+uv run src/eval.py --dpo --quant
+```
+
+or
+
+```bash
+modal run src/eval.py --dpo --quant
+```
+
 ## results
 
 ### All substructures
@@ -1543,7 +1782,8 @@ SFT:
 
 - [Unrefined run](https://wandb.ai/andrewhinh/mhf/runs/7pqnqxm3?nw=nwuserandrewhinh)
 - [Refined run](https://wandb.ai/andrewhinh/mhf/runs/48vtndx7?nw=nwuserandrewhinh)
-- [Max freeze + refined run](https://wandb.ai/andrewhinh/mhf/runs/1bdq8vjn?nw=nwuserandrewhinh)
+- [Encoder & multimodal projector freeze + refined run, overfit](https://wandb.ai/andrewhinh/mhf/runs/elyvg3c5?nw=nwuserandrewhinh)
+- [Encoder & multimodal projector freeze + refined run, reduced steps](https://wandb.ai/andrewhinh/mhf/runs/1bdq8vjn?nw=nwuserandrewhinh)
 
 Baseline prompt with EDA info, SFT:
 
@@ -2051,238 +2291,4 @@ test:
       f1: 0.0
       auc_roc: 0.0
       auc_pr: 0.0
-```
-
-## setup
-
-Run:
-
-```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
-uv sync --all-extras --dev
-uv pip install git+https://github.com/seungwoos/AutoAWQ.git@add-qwen2_5_vl --no-deps --no-build-isolation
-uv run pre-commit install
-modal setup
-modal config set-environment dev
-echo "alias modal='uv run modal'" >> ~/.bashrc
-echo "export PYTHONPATH=.:$PYTHONPATH" >> ~/.bashrc
-echo "export TOKENIZERS_PARALLELISM=false" >> ~/.bashrc
-echo "export HF_HUB_ENABLE_HF_TRANSFER=1" >> ~/.bashrc
-source ~/.bashrc
-```
-
-Create a `.env`:
-
-```bash
-WANDB_API_KEY=
-WANDB_ENTITY=
-```
-
-## repo structure
-
-```bash
-.
-├── artifacts           # data + runs.
-├── src                 # src.
-│   ├── eda.ipynb       # eda.
-│   ├── etl.py          # etl.
-│   ├── eval.py         # eval.
-│   ├── quantize.py     # quantize.
-│   └── utils.py        # utils.
-```
-
-## usage
-
-Download data:
-
-```bash
-uv run src/etl.py --sft
-```
-
-or
-
-```bash
-modal run src/etl.py --sft
-```
-
-Eval base model:
-
-```bash
-uv run src/eval.py --base
-```
-
-or
-
-```bash
-modal run src/eval.py --base
-```
-
-Quantize base model:
-
-```bash
-uv run src/quantize.py --base
-```
-
-or
-
-```bash
-modal run src/quantize.py --base
-```
-
-Eval quantized base model:
-
-```bash
-uv run src/eval.py --base --quant
-```
-
-or
-
-```bash
-modal run src/eval.py --base --quant
-```
-
-Run SFT:
-
-```bash
-modal run src/train.py --sft
-```
-
-Eval SFT model:
-
-```bash
-uv run src/eval.py --sft
-```
-
-or
-
-```bash
-modal run src/eval.py --sft
-```
-
-Quantize the SFT model:
-
-```bash
-uv run src/quantize.py --sft
-```
-
-or
-
-```bash
-modal run src/quantize.py --sft
-```
-
-Eval quantized SFT model:
-
-```bash
-uv run src/eval.py --sft --quant
-```
-
-or
-
-```bash
-modal run src/eval.py --sft --quant
-```
-
-Test the API:
-
-```bash
-uv run src/api.py --test
-```
-
-or
-
-```bash
-modal run src/api.py
-```
-
-Serve the API:
-
-```bash
-uv run src/api.py
-```
-
-or
-
-```bash
-modal serve src/api.py
-```
-
-Deploy the API:
-
-```bash
-modal deploy --env=main src/api.py
-```
-
-Test the website:
-
-```bash
-uv run src/app.py
-```
-
-or
-
-```bash
-modal serve src/app.py
-```
-
-Deploy the website:
-
-```bash
-modal deploy --env=main src/app.py
-```
-
-## future plans
-
-Run trained VLM on train data and construct new dataset with only relabelled incorrect examples:
-
-```bash
-uv run src/etl.py --dpo
-```
-
-or
-
-```bash
-modal run src/etl.py --dpo
-```
-
-Run DPO:
-
-```bash
-modal run src/train.py --dpo
-```
-
-Eval DPO model:
-
-```bash
-uv run src/eval.py --dpo
-```
-
-or
-
-```bash
-modal run src/eval.py --dpo
-```
-
-Quantize the DPO model:
-
-```bash
-uv run src/quantize.py --dpo
-```
-
-or
-
-```bash
-modal run src/quantize.py --dpo
-```
-
-Eval quantized DPO model:
-
-```bash
-uv run src/eval.py --dpo --quant
-```
-
-or
-
-```bash
-modal run src/eval.py --dpo --quant
 ```

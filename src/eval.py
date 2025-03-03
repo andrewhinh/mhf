@@ -1,7 +1,20 @@
 import base64
 import json
+from difflib import get_close_matches
 from itertools import chain
 from pathlib import Path
+
+import modal
+import numpy as np
+import torch
+import yaml
+from more_itertools import chunked
+from scipy.optimize import linear_sum_assignment
+from scipy.spatial.distance import directed_hausdorff
+from sklearn.metrics import auc, precision_recall_curve, roc_auc_score
+from tqdm import tqdm
+from vllm import LLM, SamplingParams
+from vllm.sampling_params import GuidedDecodingParams
 
 from utils import (
     APP_NAME,
@@ -15,7 +28,7 @@ from utils import (
     GPU_IMAGE,
     JSON_STRUCTURE,
     MINUTES,
-    PRETRAINED_VOLUME,
+    PROCESSOR,
     SECRETS,
     SFT_HF_MODEL,
     SFT_QUANT_MODEL,
@@ -24,33 +37,19 @@ from utils import (
     VOLUME_CONFIG,
 )
 
-with GPU_IMAGE.imports():
-    from difflib import get_close_matches
-
-    import modal
-    import numpy as np
-    import torch
-    import yaml
-    from more_itertools import chunked
-    from scipy.optimize import linear_sum_assignment
-    from scipy.spatial.distance import directed_hausdorff
-    from sklearn.metrics import auc, precision_recall_curve, roc_auc_score
-    from tqdm import tqdm
-    from vllm import LLM, SamplingParams
-    from vllm.sampling_params import GuidedDecodingParams
-
 # -----------------------------------------------------------------------------
 
 # vlm config
 
 KV_CACHE_DTYPE = None  # "fp8_e5m2"
+LIMIT_MM_PER_PROMPT = {"image": 1}
 ENFORCE_EAGER = False
 MAX_NUM_SEQS = 1
 MIN_PIXELS = 28 * 28
 MAX_PIXELS = 1280 * 28 * 28
-TEMPERATURE = 0.1
+TEMPERATURE = 0.0
 TOP_P = 0.001
-REPEATION_PENALTY = 1.1
+REPEATION_PENALTY = 1.05
 STOP_TOKEN_IDS = []
 MAX_MODEL_LEN = 32768
 MAX_TOKENS = 4096
@@ -313,7 +312,8 @@ def run_model(img_paths: list[Path], model: str, quant: bool) -> list[dict]:
     if "llm" not in globals():
         llm = LLM(
             model=model,
-            download_dir=f"/{PRETRAINED_VOLUME}",
+            tokenizer=PROCESSOR,
+            limit_mm_per_prompt=LIMIT_MM_PER_PROMPT,
             enforce_eager=ENFORCE_EAGER,
             max_num_seqs=MAX_NUM_SEQS,
             tensor_parallel_size=GPU_COUNT,

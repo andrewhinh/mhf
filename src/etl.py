@@ -4,7 +4,14 @@ import random
 import tempfile
 from pathlib import Path
 
+import cv2
 import modal
+import numpy as np
+import requests
+from gimpformats.gimpXcfDocument import GimpDocument
+from PIL import Image
+from tqdm import tqdm
+from tqdm.contrib.concurrent import thread_map
 
 from utils import (
     APP_NAME,
@@ -29,16 +36,6 @@ app = modal.App(name=f"{APP_NAME}-etl")
 # helpers
 DATA_URL = "https://api.figshare.com/v2/collections/6984822/articles?page_size=240"
 TRAIN_SZ, VAL_SZ, TEST_SZ = 0.8, 0.1, 0.1
-
-
-with GPU_IMAGE.imports():
-    import cv2
-    import numpy as np
-    import requests
-    from gimpformats.gimpXcfDocument import GimpDocument
-    from PIL import Image
-    from tqdm import tqdm
-    from tqdm.contrib.concurrent import thread_map
 
 
 @app.function(
