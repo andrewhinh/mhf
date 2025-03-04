@@ -42,8 +42,9 @@ def validate_image_file(
         file_extension = Path(image_file.filename).suffix.lower()
         if file_extension not in valid_extensions:
             return {"error": "Invalid file type. Please upload an image."}
-        with io.BytesIO(image_file.file.read()) as f:
-            image_base64 = base64.b64encode(f.read()).decode("utf-8")
+        image_file.file.seek(0)  # reset pointer in case of multiple uploads
+        img_bytes = image_file.file.read()
+        image_base64 = base64.b64encode(img_bytes).decode("utf-8")
         return validate_image_base64(image_base64)
     return {"error": "No image uploaded"}
 

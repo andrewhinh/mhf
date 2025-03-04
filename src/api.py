@@ -63,7 +63,7 @@ if modal.is_local():
 else:
     GPU_COUNT = 1
 
-GPU_TYPE = "t4"
+GPU_TYPE = "l4"
 GPU_CONFIG = f"{GPU_TYPE}:{GPU_COUNT}"
 
 app = modal.App(name=f"{APP_NAME}-api")

@@ -2,6 +2,8 @@
 
 MHF Automated Labelling
 
+An automated ultrasound substructure localization system utilizing a fine-tuned Qwen2.5-VL-3B-Instruct that reduces Hausdorff distance by 57.65% and Euclidean distance by 31.72% compared to the base model. ETL, evaluation, and model quantization/training alongside an API and website completed and served for under $2.
+
 ## helpful links
 
 - [Web app](https://bit.ly/mhf-winter-2025)

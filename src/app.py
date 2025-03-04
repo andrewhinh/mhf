@@ -2,11 +2,13 @@ import csv
 import io
 import json
 import os
+import tempfile
 import uuid
 from asyncio import sleep
 from base64 import b64decode, b64encode
 from datetime import datetime
 from io import BytesIO
+from pathlib import Path
 
 import modal
 import numpy as np
@@ -74,7 +76,11 @@ def display_labels(g) -> str:
     plt.axis("off")
     response = json.loads(g.response)
     for label, points in response.items():
+        width, height = image.size
+        scale_x, scale_y = width / 800, height / 600
         x, y = zip(*points)
+        x = [coord * scale_x for coord in x]
+        y = [coord * scale_y for coord in y]
         plt.plot(x, y, "o", label=label)
     plt.legend()
     buf = io.BytesIO()
@@ -232,7 +238,7 @@ def get_app():  # noqa: C901
                         "Failed to scan image",
                         cls="text-red-300",
                     ),
-                    cls="w-5/6 flex flex-col md:flex-row justify-start md:pl-8 gap-8 items-center",
+                    cls="w-5/6 flex flex-col md:flex-row justify-evenly gap-4 items-center",
                 ),
                 cls="w-full flex justify-between items-center p-4",
                 id=f"gen-{g.id}",
@@ -274,7 +280,7 @@ def get_app():  # noqa: C901
                         alt="Card image",
                         cls="max-h-48 max-w-48 md:max-h-60 md:max-w-60 object-contain",
                     ),
-                    cls="w-5/6 flex flex-col md:flex-row justify-start md:pl-8 gap-8 items-center",
+                    cls="w-5/6 flex flex-col md:flex-row justify-evenly gap-4 items-center",
                 ),
                 cls="w-full flex justify-between items-center p-4",
                 id=f"gen-{g.id}",
@@ -316,7 +322,7 @@ def get_app():  # noqa: C901
                     sse_connect=f"/stream-gens/{g.id}",
                     sse_swap="UpdateGens",
                 ),
-                cls="w-5/6 flex flex-col md:flex-row justify-start md:pl-8 gap-8 items-center",
+                cls="w-5/6 flex flex-col md:flex-row justify-evenly gap-4 items-center",
             ),
             cls="w-full flex justify-between items-center p-4",
             id=f"gen-{g.id}",
@@ -521,7 +527,7 @@ def get_app():  # noqa: C901
                     )
                     for i, img_path in enumerate(DEFAULT_IMG_PATHS)
                 ],
-                cls="w-full md:w-2/3 grid grid-cols-1 md:grid-cols-4 gap-4",
+                cls="w-full md:w-2/3 grid grid-cols-2 md:grid-cols-4 gap-4",
             ),
             num_gens(session),
             fh.Form(
@@ -564,9 +570,19 @@ def get_app():  # noqa: C901
         session,
     ):
         try:
+            path = ARTIFACTS_PATH / "data" / image_file.filename
+            if not path.exists():  # any non-default input
+                image_file.file.seek(0)  # reset pointer in case of multiple uploads
+                with tempfile.NamedTemporaryFile(
+                    delete=False, suffix=Path(image_file.filename).suffix
+                ) as tmp_file:
+                    tmp_file.write(image_file.file.read())
+                    path = tmp_file.name
             response = requests.post(
                 f"{os.getenv('API_URL')}",
-                files={"image_file": open(image_file.filename, "rb")},
+                files={
+                    "image_file": open(path, "rb"),
+                },
                 timeout=api_timeout,
             )
             if not response.ok:
