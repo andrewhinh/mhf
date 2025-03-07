@@ -47,6 +47,8 @@ WANDB_ENTITY=
 │   ├── eda.ipynb       # eda.
 │   ├── etl.py          # etl.
 │   ├── eval.py         # eval.
+│   ├── load_test.py    # load testing.
+│   ├── locustfile.py   # locust user defn.
 │   ├── quantize.py     # quantize.
 │   └── utils.py        # utils.
 ```
@@ -75,6 +77,12 @@ Deploy the API:
 
 ```bash
 modal deploy --env=main src/api.py
+```
+
+Test the latency and throughput of the API:
+
+```bash
+modal run src/load_test.py
 ```
 
 Serve the website:

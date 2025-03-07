@@ -13,7 +13,6 @@ from pathlib import Path
 import modal
 import numpy as np
 import requests
-from dotenv import load_dotenv
 from fasthtml import common as fh
 from matplotlib import pyplot as plt
 from PIL import Image
@@ -893,7 +892,6 @@ def get_app():  # noqa: C901
     return f_app
 
 
-load_dotenv(PARENT_PATH / ".env")
 f_app = get_app()
 
 

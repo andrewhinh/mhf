@@ -6,6 +6,7 @@ import tempfile
 from pathlib import Path, PurePosixPath
 
 import modal
+from dotenv import load_dotenv
 from PIL import Image
 from pydantic import BaseModel
 
@@ -15,6 +16,8 @@ APP_NAME = "mhf"
 PARENT_PATH = Path(__file__).parent.parent
 ARTIFACTS_PATH = PARENT_PATH / "artifacts"
 SRC_PATH = PARENT_PATH / "src"
+
+load_dotenv(PARENT_PATH / ".env")
 
 # display
 RESIZE_DIMENSIONS = (800, 600)
