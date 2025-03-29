@@ -22,11 +22,13 @@ from utils import (
     APP_NAME,
     BASE_HF_MODEL,
     BASE_QUANT_MODEL,
+    CPU,
     DATA_VOL_PATH,
     DPO_HF_MODEL,
     DPO_MERGED,
     DPO_QUANT_MODEL,
     GPU_IMAGE,
+    MEM,
     MINUTES,
     PROCESSOR,
     RUNS_VOL_PATH,
@@ -275,6 +277,8 @@ def main(base: bool, sft: bool, dpo: bool):
 
 @app.function(
     image=GPU_IMAGE,
+    cpu=CPU,
+    memory=MEM,
     gpu=GPU_CONFIG,
     volumes=VOLUME_CONFIG,
     secrets=SECRETS,

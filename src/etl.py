@@ -15,9 +15,11 @@ from tqdm.contrib.concurrent import thread_map
 
 from utils import (
     APP_NAME,
+    CPU,
     DATA_VOL_PATH,
     DEFAULT_USER_PROMPT,
     GPU_IMAGE,
+    MEM,
     MINUTES,
     SPLITS,
     SUBSTRUCTURE_INFO,
@@ -40,6 +42,8 @@ TRAIN_SZ, VAL_SZ, TEST_SZ = 0.8, 0.1, 0.1
 
 @app.function(
     image=GPU_IMAGE,
+    cpu=CPU,
+    memory=MEM,
     timeout=TIMEOUT,
 )
 def load_json(sample: dict):
@@ -117,6 +121,8 @@ def load_xcf(path):
 
 @app.function(
     image=GPU_IMAGE,
+    cpu=CPU,
+    memory=MEM,
     volumes=VOLUME_CONFIG,
     timeout=TIMEOUT,
 )
@@ -229,6 +235,8 @@ def main(sft: bool, dpo: bool):
 
 @app.function(
     image=GPU_IMAGE,
+    cpu=CPU,
+    memory=MEM,
     volumes=VOLUME_CONFIG,
     timeout=TIMEOUT,
 )

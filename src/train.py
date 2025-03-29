@@ -11,11 +11,13 @@ from transformers import AutoProcessor, Qwen2_5_VLForConditionalGeneration
 from utils import (
     APP_NAME,
     BASE_HF_MODEL,
+    CPU,
     DATA_VOL_PATH,
     DPO_HF_MODEL,
     DPO_MERGED,
     DPO_MODEL,
     GPU_IMAGE,
+    MEM,
     MINUTES,
     RUNS_VOL_PATH,
     SECRETS,
@@ -105,7 +107,7 @@ sft_config = {
     "finetuning_type": "full",
     "freeze_vision_tower": True,
     "freeze_multi_modal_projector": True,
-    "train_mm_proj_only": False,
+    "freeze_language_model": False,
     "deepspeed": str(DS_PATH),
     ### dataset
     "dataset": "sft",
@@ -297,6 +299,8 @@ def main(sft: bool, dpo: bool):
 
 @app.function(
     image=GPU_IMAGE,
+    cpu=CPU,
+    memory=MEM,
     gpu=GPU_CONFIG,
     volumes=VOLUME_CONFIG,
     secrets=SECRETS,

@@ -52,6 +52,10 @@ def validate_image_file(
     return {"error": "No image uploaded"}
 
 
+MAX_FILE_SIZE_MB = 5
+MAX_DIMENSIONS = (4096, 4096)
+
+
 def validate_image_base64(image_base64: str) -> dict[str, str]:
     # Verify MIME type and magic #
     img = Image.open(io.BytesIO(base64.b64decode(image_base64)))
@@ -61,8 +65,6 @@ def validate_image_base64(image_base64: str) -> dict[str, str]:
         return {"error": e}
 
     # Limit img size
-    MAX_FILE_SIZE_MB = 5
-    MAX_DIMENSIONS = (4096, 4096)
     if len(image_base64) > MAX_FILE_SIZE_MB * 1024 * 1024:
         return {"error": f"File size exceeds {MAX_FILE_SIZE_MB}MB limit."}
     if img.size[0] > MAX_DIMENSIONS[0] or img.size[1] > MAX_DIMENSIONS[1]:
@@ -179,7 +181,8 @@ else:
     DATA_VOL_PATH = Path(f"/{DATA_VOLUME}")
     RUNS_VOL_PATH = Path(f"/{RUNS_VOLUME}")
 
-CPU = 20  # cores (Modal max)
+CPU = 4  # cores (Modal soft limit)
+MEM = 2048  # MB (Modal soft limit)
 MINUTES = 60  # seconds
 
 TRAIN_REPO_PATH = Path("/LLaMA-Factory")
@@ -234,6 +237,7 @@ GPU_IMAGE = (
             "HUGGINGFACE_HUB_CACHE": f"/{PRETRAINED_VOLUME}",
             "HF_HUB_ENABLE_HF_TRANSFER": "1",
             "FORCE_TORCHRUN": "1",
+            "WANDB_PROJECT": APP_NAME,
         }
     )
     .add_local_python_source("utils")

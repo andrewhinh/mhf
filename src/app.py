@@ -464,13 +464,6 @@ def get_app():  # noqa: C901
     def main_content(
         session,
     ):
-        curr_gens = gens(where=f"session_id='{session['session_id']}'", limit=max_gens)
-        global shown_generations
-        shown_generations = {}
-        for g in curr_gens:
-            shown_generations[g.id] = (
-                "response" if g.response else "failed" if g.failed else "loading"
-            )
         return fh.Main(
             fh.H1(
                 "Automated Ultrasound Substructure Localization",

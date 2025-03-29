@@ -8,6 +8,7 @@ from utils import (
     APP_NAME,
     ARTIFACTS_PATH,
     CPU,
+    MEM,
     MINUTES,
     PYTHON_VERSION,
     RUNS_VOLUME,
@@ -63,7 +64,7 @@ default_args = [
 ]
 
 
-@app.function(cpu=CPU, timeout=TIMEOUT)
+@app.function(cpu=CPU, memory=MEM, timeout=TIMEOUT)
 def run_locust(args: list, wait=False):
     import subprocess
 
@@ -73,7 +74,7 @@ def run_locust(args: list, wait=False):
         return process.returncode
 
 
-@app.function(allow_concurrent_inputs=ALLOW_CONCURRENT_INPUTS, cpu=CPU)
+@app.function(allow_concurrent_inputs=ALLOW_CONCURRENT_INPUTS, cpu=CPU, memory=MEM)
 @modal.web_server(port=PORT)
 def serve_locust():
     run_locust.local(default_args)

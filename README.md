@@ -33,6 +33,7 @@ Create a `.env`:
 
 ```bash
 WANDB_API_KEY=
+WANDB_PROJECT=
 WANDB_ENTITY=
 ```
 
