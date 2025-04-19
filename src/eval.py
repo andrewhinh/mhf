@@ -20,6 +20,7 @@ from utils import (
     APP_NAME,
     BASE_HF_MODEL,
     BASE_QUANT_MODEL,
+    CPU,
     DATA_VOL_PATH,
     DEFAULT_SYSTEM_PROMPT,
     DEFAULT_USER_PROMPT,
@@ -27,6 +28,7 @@ from utils import (
     DPO_QUANT_MODEL,
     GPU_IMAGE,
     JSON_STRUCTURE,
+    MEM,
     MINUTES,
     PROCESSOR,
     SECRETS,
@@ -300,6 +302,8 @@ def summarize(lbl_pt_metrics):
 
 @app.function(
     image=GPU_IMAGE,
+    cpu=CPU,
+    memory=MEM,
     gpu=GPU_CONFIG,
     volumes=VOLUME_CONFIG,
     secrets=SECRETS,

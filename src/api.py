@@ -8,9 +8,6 @@ import torch
 import uvicorn
 from fastapi import FastAPI, HTTPException, UploadFile
 from PIL import ImageFile
-from vllm import LLM, SamplingParams
-from vllm.sampling_params import GuidedDecodingParams
-
 from utils import (
     APP_NAME,
     DEFAULT_IMG_PATHS,
@@ -27,6 +24,8 @@ from utils import (
     Colors,
     validate_image_file,
 )
+from vllm import LLM, SamplingParams
+from vllm.sampling_params import GuidedDecodingParams
 
 # -----------------------------------------------------------------------------
 
@@ -55,7 +54,7 @@ MAX_DIMENSIONS = (4096, 4096)
 # Modal
 
 TIMEOUT = 24 * 60 * MINUTES
-CONTAINER_IDLE_TIMEOUT = 5 * MINUTES
+SCALEDOWN_WINDOW = 5 * MINUTES
 ALLOW_CONCURRENT_INPUTS = 1
 
 if modal.is_local():
@@ -187,9 +186,9 @@ def get_app():  # noqa: C901
     volumes=VOLUME_CONFIG,
     secrets=SECRETS,
     timeout=TIMEOUT,
-    container_idle_timeout=CONTAINER_IDLE_TIMEOUT,
-    allow_concurrent_inputs=ALLOW_CONCURRENT_INPUTS,
+    scaledown_window=SCALEDOWN_WINDOW,
 )
+@modal.concurrent(max_inputs=ALLOW_CONCURRENT_INPUTS)
 @modal.asgi_app()
 def modal_get():
     return get_app()

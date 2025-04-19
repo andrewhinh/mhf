@@ -19,7 +19,6 @@ from PIL import Image
 from simpleicons.icons import si_github
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import StreamingResponse
-
 from utils import (
     APP_NAME,
     ARTIFACTS_PATH,
@@ -59,7 +58,7 @@ IMAGE = (
 )
 
 TIMEOUT = 5 * MINUTES  # max
-CONTAINER_IDLE_TIMEOUT = 15 * MINUTES  # max
+SCALEDOWN_WINDOW = 15 * MINUTES  # max
 ALLOW_CONCURRENT_INPUTS = 1000  # max
 
 
@@ -464,13 +463,6 @@ def get_app():  # noqa: C901
     def main_content(
         session,
     ):
-        curr_gens = gens(where=f"session_id='{session['session_id']}'", limit=max_gens)
-        global shown_generations
-        shown_generations = {}
-        for g in curr_gens:
-            shown_generations[g.id] = (
-                "response" if g.response else "failed" if g.failed else "loading"
-            )
         return fh.Main(
             fh.H1(
                 "Automated Ultrasound Substructure Localization",
@@ -900,9 +892,9 @@ f_app = get_app()
     volumes=VOLUME_CONFIG,
     secrets=SECRETS,
     timeout=TIMEOUT,
-    container_idle_timeout=CONTAINER_IDLE_TIMEOUT,
-    allow_concurrent_inputs=ALLOW_CONCURRENT_INPUTS,
+    scaledown_window=SCALEDOWN_WINDOW,
 )
+@modal.concurrent(max_inputs=ALLOW_CONCURRENT_INPUTS)
 @modal.asgi_app()
 def modal_get():
     return f_app

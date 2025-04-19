@@ -29,11 +29,14 @@ echo "export HF_HUB_ENABLE_HF_TRANSFER=1" >> ~/.bashrc
 source ~/.bashrc
 ```
 
-Create a `.env`:
+Create a `.env` (+ `.env.dev`):
 
 ```bash
+HF_TOKEN=
 WANDB_API_KEY=
+WANDB_PROJECT=
 WANDB_ENTITY=
+API_URL=
 ```
 
 ## repo structure
