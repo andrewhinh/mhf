@@ -22,7 +22,6 @@ uv run pre-commit install
 source .venv/bin/activate
 git clone https://github.com/Len-Stevens/Python-Antivirus.git
 modal setup
-modal config set-environment dev
 echo "export TOKENIZERS_PARALLELISM=false" >> ~/.bashrc
 echo "export HF_HUB_ENABLE_HF_TRANSFER=1" >> ~/.bashrc
 source ~/.bashrc
