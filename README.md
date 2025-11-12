@@ -6,7 +6,6 @@ An automated ultrasound substructure localization system utilizing a fine-tuned 
 
 ## helpful links
 
-- [Web app](https://bit.ly/mhf-winter-2025)
 - [Huggingface models](https://huggingface.co/andrewhinh)
 - [Weights and Biases runs](https://wandb.ai/andrewhinh/mhf?nw=nwuserandrewhinh)
 
