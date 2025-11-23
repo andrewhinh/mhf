@@ -6,27 +6,30 @@ An automated ultrasound substructure localization system utilizing a fine-tuned 
 
 ## helpful links
 
-- [Huggingface models](https://huggingface.co/andrewhinh)
+- [Huggingface models](https://huggingface.co/collections/ajhinh/mhf)
 - [Weights and Biases runs](https://wandb.ai/andrewhinh/mhf?nw=nwuserandrewhinh)
 
 ## setup
 
-Run:
-
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
-uv sync --all-extras --dev
-uv pip install git+https://github.com/seungwoos/AutoAWQ.git@add-qwen2_5_vl --no-deps --no-build-isolation
-uv run pre-commit install
-source .venv/bin/activate
-git clone https://github.com/Len-Stevens/Python-Antivirus.git
-modal setup
 echo "export TOKENIZERS_PARALLELISM=false" >> ~/.bashrc
 echo "export HF_HUB_ENABLE_HF_TRANSFER=1" >> ~/.bashrc
 source ~/.bashrc
 ```
 
-Create a `.env` (+ `.env.dev`):
+Then:
+
+```bash
+git clone https://github.com/Len-Stevens/Python-Antivirus.git
+uv sync  # or `uv sync --extra gpu` if you have a GPU
+# uv pip install git+https://github.com/seungwoos/AutoAWQ.git@add-qwen2_5_vl --no-deps --no-build-isolation  # if you have a GPU
+source .venv/bin/activate
+pre-commit install
+modal setup
+```
+
+Finally, create a `.env` (+ `.env.dev`):
 
 ```bash
 HF_TOKEN=
@@ -255,7 +258,8 @@ modal run src/eval.py --dpo --quant
 
 ### All substructures
 
-Baseline prompt with EDA info:
+<details>
+<summary>Baseline prompt with EDA info</summary>
 
 ```bash
 train:
@@ -509,7 +513,10 @@ test:
       auc_pr: 0.0
 ```
 
-Baseline prompt with EDA info (7B):
+</details>
+
+<details>
+<summary>Baseline prompt with EDA info (7B)</summary>
 
 ```bash
 train:
@@ -763,7 +770,10 @@ test:
       auc_pr: 0.0
 ```
 
-Baseline prompt with EDA info, quantized:
+</details>
+
+<details>
+<summary>Baseline prompt with EDA info, quantized</summary>
 
 ```bash
 train:
@@ -1017,12 +1027,18 @@ test:
       auc_pr: 1.0
 ```
 
-SFT:
+</details>
+
+<details>
+<summary>SFT runs</summary>
 
 - [Unrefined run](https://wandb.ai/andrewhinh/mhf/runs/5v83pidh?nw=nwuserandrewhinh)
 - [Refined run](https://wandb.ai/andrewhinh/mhf/runs/4wmqs9hc?nw=nwuserandrewhinh)
 
-Baseline prompt with EDA info, SFT:
+</details>
+
+<details>
+<summary>Baseline prompt with EDA info, SFT</summary>
 
 ```bash
 train:
@@ -1276,7 +1292,10 @@ test:
       auc_pr: 0.0
 ```
 
-Baseline prompt with EDA info, SFT + quantized:
+</details>
+
+<details>
+<summary>Baseline prompt with EDA info, SFT + quantized</summary>
 
 ```bash
 train:
@@ -1530,9 +1549,12 @@ test:
       auc_pr: 1.0
 ```
 
+</details>
+
 ### Per-substructure
 
-Baseline prompt with EDA info:
+<details>
+<summary>Baseline prompt with EDA info</summary>
 
 ```bash
 train:
@@ -1786,16 +1808,20 @@ test:
       auc_pr: 1.0
 ```
 
-Baseline prompt with EDA info, quantized (not done for sake of time):
+</details>
 
-SFT:
+<details>
+<summary>SFT runs</summary>
 
 - [Unrefined run](https://wandb.ai/andrewhinh/mhf/runs/7pqnqxm3?nw=nwuserandrewhinh)
 - [Refined run](https://wandb.ai/andrewhinh/mhf/runs/48vtndx7?nw=nwuserandrewhinh)
 - [Encoder & multimodal projector freeze + refined run, overfit](https://wandb.ai/andrewhinh/mhf/runs/elyvg3c5?nw=nwuserandrewhinh)
 - [Encoder & multimodal projector freeze + refined run, reduced steps](https://wandb.ai/andrewhinh/mhf/runs/1bdq8vjn?nw=nwuserandrewhinh)
 
-Baseline prompt with EDA info, SFT:
+</details>
+
+<details>
+<summary>Baseline prompt with EDA info, SFT</summary>
 
 ```bash
 train:
@@ -2049,7 +2075,10 @@ test:
       auc_pr: 1.0
 ```
 
-Baseline prompt with EDA info, SFT + quantized:
+</details>
+
+<details>
+<summary>Baseline prompt with EDA info, SFT + quantized</summary>
 
 ```bash
 train:
@@ -2302,3 +2331,5 @@ test:
       auc_roc: 0.0
       auc_pr: 0.0
 ```
+
+</details>
